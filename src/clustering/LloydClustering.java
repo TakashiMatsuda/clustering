@@ -1,5 +1,6 @@
 package clustering;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,8 @@ public class LloydClustering implements Clustering {
 		// 理想的にはランダムに最初の代表点を選ぶ方がよいが、
 		// 実装の手間と計算コストの点から
 		// とりあえず初めのk個の点を代表点とする。
+		
+		// java jdk 1.7 update 7の安全性を調べておいてください。
 		
 		/**
 		 * Colect factors with the data.
@@ -33,11 +36,31 @@ public class LloydClustering implements Clustering {
 		/**
 		 * Clustering and reclustering
 		 */
-		while(true){// 終了条件を書いてください
+		List<double[][]> clusters = new ArrayList<double[][]>(k);
+		// 各clusterSを空集合に設定したい、コンストラクタの定義を確認
+			
+		
+		// 一度選ばれた要素はdataから消去されなければならない
+		// 上の実装をどうするか考えていなかったので再考。
+		while(true){// 終了条件を書いてください- 代表点が変化しなくなるまで
+			/*
+			 * Find the nearest factor from each delege.
+			 */
+			// この英語は怪しい、あとで調べて書きなおしておいてください
+			for(int i = 0; i < k; i++){
+				d
+				
+				
+			}
+			
+			
+<<<<<<< HEAD
 			
 			
 			
-			
+=======
+			break;
+>>>>>>> ecb6cb579c9ecdd1ea80c2cc92d9e6d77ce35818
 		}
 		
 		
