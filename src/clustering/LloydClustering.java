@@ -35,6 +35,9 @@ public class LloydClustering implements Clustering {
 		 */
 		while(true){// 終了条件を書いてください
 			
+			
+			
+			
 		}
 		
 		
