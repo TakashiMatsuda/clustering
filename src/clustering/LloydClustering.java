@@ -48,7 +48,7 @@ public class LloydClustering implements Clustering {
 			 */
 			// この英語は怪しい、あとで調べて書きなおしておいてください
 			for(int i = 0; i < k; i++){
-				
+			}		
 			break;
 		}
 		
