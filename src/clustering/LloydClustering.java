@@ -1,6 +1,7 @@
 package clustering;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -9,6 +10,10 @@ import java.util.List;
  *
  */
 public class LloydClustering implements Clustering {
+	
+	int n;
+	int d;
+	int k;
 
 	/**
 	 * xとyの次元数が一致していることを確認して下さい!
@@ -47,10 +52,31 @@ public class LloydClustering implements Clustering {
 			return false;
 	}
 	
+	/**
+	 * 
+	 * @param cls 評価するクラスタ集合
+	 * @return 新しい代表点集合
+	 */
+	private double[][] refresh(ArrayList<ArrayList<double[]>> cls){
+		double[][] fruit = new double[k][d];
+		double sum;
+		for (int i = 0; i < k; i++){
+			sum = 0;
+			for(int j = 0; j < d; j++){
+				/*
+				 * 誤差二乗平均を計算
+				 */
+				
+				
+			}
+			
+		}
+	}
+	
 	
 	
 	@Override
-	public List<double[][]> Ksplit(int k, List<double[]> dataSpace) {// 型変更、下流を書き直してください
+	public List<double[][]> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
 		/**
 		 * data: データ集合
 		 * k: 目標クラスタリングの数
@@ -64,9 +90,9 @@ public class LloydClustering implements Clustering {
 		 * n: dataの要素数
 		 * d: dataの次元数
 		 */
-		int n = dataSpace.size();
-		int d = dataSpace.get(0).length;
-		
+		this.n = dataSpace.size();
+		this.d = dataSpace.get(0).length;
+		this.k = khiki;
 		/**
 		 * Initiation
 		 * Select initial delegation.
@@ -88,6 +114,7 @@ public class LloydClustering implements Clustering {
 		double[] suggest = new double[d];
 		double minDistance = 1.0 / 0.0;
 		double[][] newDelegation = new double[k][d];
+		int r = 0;
 		while(true){// 終了条件を書いてください- 代表点が変化しなくなるまで
 			/*
 			 * Find each the nearest factor from each deletion.
@@ -98,13 +125,16 @@ public class LloydClustering implements Clustering {
 					suggest = dataSpace.get(j);
 					if (distance(suggest, delegation[i]) < minDistance){
 						minDistance = distance(suggest, delegation[i]);
+						r = j;
 					}
 				}
+				// 追加の仕方がわからん
 			}
 			
 			/*
 			 * 代表点を再構成
 			 */
+			
 			
 			
 			/*
