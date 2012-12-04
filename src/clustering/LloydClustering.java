@@ -16,7 +16,6 @@ public class LloydClustering implements Clustering {
 		// 実装の手間と計算コストの点から
 		// とりあえず初めのk個の点を代表点とする。
 		
-		// java jdk 1.7 update 7の安全性を調べておいてください。
 		
 		/**
 		 * Colect factors with the data.
@@ -63,7 +62,9 @@ public class LloydClustering implements Clustering {
 		
 		
 		
-		
+		/*
+		 *gitどうかな
+		 */
 		return null;
 	}
 }
