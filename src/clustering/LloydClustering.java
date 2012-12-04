@@ -29,6 +29,25 @@ public class LloydClustering implements Clustering {
 		return Math.sqrt(sum);
 	}
 	
+	/**
+	 * a
+	 * @param a
+	 * @param b
+	 * @return aとbの間の距離和を計算し、閾値以下だったらfalse, そうでなければtrue
+	 */
+	private boolean judgeDelegation(double[][] a, double[][] b, double threshold){
+		double sum = 0;
+		double sumsum;
+		for (int i = 0; i < a.length; i++){
+			sum += distance(a[i], b[i]);
+		}
+		if (sum > threshold)
+			return true;
+		else
+			return false;
+	}
+	
+	
 	
 	@Override
 	public List<double[][]> Ksplit(int k, List<double[]> dataSpace) {// 型変更、下流を書き直してください
@@ -68,6 +87,7 @@ public class LloydClustering implements Clustering {
 		// 上の実装をどうするか考えていなかったので再考。-> Listでの実装に変更します。安全にプログラムしたい。
 		double[] suggest = new double[d];
 		double minDistance = 1.0 / 0.0;
+		double[][] newDelegation = new double[k][d];
 		while(true){// 終了条件を書いてください- 代表点が変化しなくなるまで
 			/*
 			 * Find each the nearest factor from each deletion.
@@ -83,9 +103,19 @@ public class LloydClustering implements Clustering {
 			}
 			
 			/*
+			 * 代表点を再構成
+			 */
+			
+			
+			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
-			break;
+			if (judgeDelegation(delegation, newDelegation, 0.01)){
+				
+			}
+			else{
+				break;
+			}
 		}
 		return null;
 	}
