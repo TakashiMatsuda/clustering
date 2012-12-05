@@ -9,13 +9,14 @@ public class LloydClusteringTest {
 	@Test
 	public void testKsplit() {
 		// 乱数発生器の使い方を確認して書く
+		Math.random();
+		double ran = Math.random();
 		
-		fail("まだ実装されていません");
 	}
 
 	@Test
 	public void testLloydClustering() {
-		fail("まだ実装されていません");
+		LloydClustering exa = new LloydClustering();
 	}
 
 }
