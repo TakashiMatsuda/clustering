@@ -60,12 +60,20 @@ public class LloydClustering implements Clustering {
 	private double[][] refresh(List<ArrayList<double[]>> clusters){
 		double[][] fruit = new double[k][d];
 		double sum;
+		// 総距離
+		double dist;
+		int l;// メモリより計算量を優先
 		for (int i = 0; i < k; i++){
-			sum = 0;
+			dist = 0;
 			for(int j = 0; j < d; j++){
 				/*
 				 * 誤差二乗平均を計算
 				 */
+				sum = 0;
+				l = clusters.get(i).get(j).length;
+				for(int u = 0; u < l; u++){
+					sum += clusters.get(i).get(j)[u];
+				}
 				
 				
 			}
