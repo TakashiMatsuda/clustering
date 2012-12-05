@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * This class includes some methods for Lloyd way to k-means clustering.
  * @author tks
- *
+ *	だいたい書き終わった
  */
 public class LloydClustering implements Clustering {
 	
@@ -54,10 +54,10 @@ public class LloydClustering implements Clustering {
 	
 	/**
 	 * 
-	 * @param cls 評価するクラスタ集合
+	 * @param clusters 評価するクラスタ集合
 	 * @return 新しい代表点集合
 	 */
-	private double[][] refresh(ArrayList<ArrayList<double[]>> cls){
+	private double[][] refresh(List<ArrayList<double[]>> clusters){
 		double[][] fruit = new double[k][d];
 		double sum;
 		for (int i = 0; i < k; i++){
@@ -76,7 +76,7 @@ public class LloydClustering implements Clustering {
 	
 	
 	@Override
-	public List<double[][]> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
+	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
 		/**
 		 * data: データ集合
 		 * k: 目標クラスタリングの数
@@ -108,14 +108,12 @@ public class LloydClustering implements Clustering {
 		 * clustersを空集合として初期化
 		 */
 		List<ArrayList<double[]>> clusters = new ArrayList<ArrayList<double[]>>(k);
-		
 		// 一度選ばれた要素はdataから消去されなければならない
-		// 上の実装をどうするか考えていなかったので再考。-> Listでの実装に変更します。安全にプログラムしたい。
 		double[] suggest = new double[d];
 		double minDistance = 1.0 / 0.0;
 		double[][] newDelegation = new double[k][d];
 		int r = 0;
-		while(true){// 終了条件を書いてください- 代表点が変化しなくなるまで
+		while(true){
 			/*
 			 * Find each the nearest factor from each deletion.
 			 */
@@ -128,26 +126,27 @@ public class LloydClustering implements Clustering {
 						r = j;
 					}
 				}
-				// 追加の仕方がわからん
+				clusters.get(i).add(dataSpace.get(r));// この追加法に変わるものを確認して下さい
+				
 			}
 			
 			/*
 			 * 代表点を再構成
 			 */
-			
+			newDelegation = refresh(clusters);
 			
 			
 			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
 			if (judgeDelegation(delegation, newDelegation, 0.01)){
-				
+				// 何もしない
 			}
 			else{
 				break;
 			}
 		}
-		return null;
+		return clusters;
 	}
 	
 	LloydClustering(){
