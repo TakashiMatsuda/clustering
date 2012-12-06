@@ -79,6 +79,7 @@ public class LloydClustering implements Clustering {
 			}
 			
 		}
+		return fruit;
 	}
 	
 	
@@ -115,12 +116,24 @@ public class LloydClustering implements Clustering {
 		 * Clustering and reclustering
 		 * clustersを空集合として初期化
 		 */
-		List<ArrayList<double[]>> clusters = new ArrayList<ArrayList<double[]>>(k);
+		List<ArrayList<double[]>> clusters = new LinkedList<ArrayList<double[]>>();
 		// 一度選ばれた要素はdataから消去されなければならない
+		/*
+		 * 各クラスタの初期化、最初は代表点を一つ入れる
+		 */
+		for(int i = 0; i < k; i++){
+			ArrayList<double[]> w = new ArrayList<double[]>();
+			w.add(delegation[i]);
+			clusters.add(w);
+		}
+		
 		double[] suggest = new double[d];
 		double minDistance = 1.0 / 0.0;
 		double[][] newDelegation = new double[k][d];
 		int r = 0;
+		
+		// 今のところ無限ループでした。
+		// 各メソッドを整備したい。
 		while(true){
 			/*
 			 * Find each the nearest factor from each deletion.
@@ -134,7 +147,9 @@ public class LloydClustering implements Clustering {
 						r = j;
 					}
 				}
+				// ArrayListのsetで起こる挙動を調べて下さい
 				clusters.get(i).add(dataSpace.get(r));// この追加法に変わるものを確認して下さい
+				// 次はこれの挙動を確認します。
 				
 			}
 			
