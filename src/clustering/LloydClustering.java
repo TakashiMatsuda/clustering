@@ -182,12 +182,16 @@ public class LloydClustering implements Clustering {
 			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 0.01)){
-				
+			if (judgeDelegation(delegation, newDelegation, 0.1)){
+				/*
+				 * 代表点を更新します
+				 */
+				delegation = newDelegation;
 			}
 			else{
 				break;
 			}
+			
 		}
 		return clusters;
 	}
