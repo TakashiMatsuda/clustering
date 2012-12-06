@@ -3,6 +3,7 @@
  */
 package scatch;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -28,10 +29,17 @@ public class UnderstandList {
 		 * 順番に整数を格納
 		 */
 		for(int i = 0; i < 5; i++){
+			ArrayList<Integer> data = new ArrayList<Integer>();
 			for(int  j = 0; j < 10; j++){
-				
+				data.add(j);
 			}
+			tester.add(data);
 		}
+		
+		
+		/*
+		 * 乱数で置き換えようとする
+		 */
 		
 	}
 	
