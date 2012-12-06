@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * This class includes some methods for Lloyd way to k-means clustering.
  * @author tks
- *	だいたい書き終わった
+ *	
  */
 public class LloydClustering implements Clustering {
 	
@@ -57,7 +57,7 @@ public class LloydClustering implements Clustering {
 	 * @param clusters 評価するクラスタ集合
 	 * @return 新しい代表点集合
 	 */
-	private double[][] refresh(List<ArrayList<double[]>> clusters){
+	private double[][] refresh(List<ArrayList<double[]>> clusters){// 次はこの関数を仕上げます
 		double[][] fruit = new double[k][d];
 		double sum;
 		// 総距離
@@ -72,7 +72,7 @@ public class LloydClustering implements Clustering {
 				sum = 0;
 				l = clusters.get(i).get(j).length;
 				for(int u = 0; u < l; u++){
-					sum += clusters.get(i).get(j)[u];
+					sum += ((List)(clusters.get(i))).get(j)[u];
 				}
 				
 				
@@ -84,6 +84,7 @@ public class LloydClustering implements Clustering {
 	
 	
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
 		/**
@@ -148,7 +149,7 @@ public class LloydClustering implements Clustering {
 					}
 				}
 				// ArrayListのsetで起こる挙動を調べて下さい
-				clusters.get(i).add(dataSpace.get(r));// この追加法に変わるものを確認して下さい
+				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));// この追加法に変わるものを確認して下さい
 				// 次はこれの挙動を確認します。
 				
 			}
@@ -163,7 +164,7 @@ public class LloydClustering implements Clustering {
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
 			if (judgeDelegation(delegation, newDelegation, 0.01)){
-				// 何もしない
+				
 			}
 			else{
 				break;
