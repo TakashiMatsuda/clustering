@@ -66,8 +66,7 @@ public class LloydClustering implements Clustering {
 		int l;
 		for (int i = 0; i < k; i++){
 			dist = 0;
-			for(int j = 0; j < d; j++){// 
-				// ここから下、
+			for(int j = 0; j < d; j++){
 				/*
 				 * 誤差二乗平均を計算
 				 */
@@ -107,11 +106,6 @@ public class LloydClustering implements Clustering {
 	
 	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {
 		/**
-		 * data: データ集合
-		 * k: 目標クラスタリングの数
-		 */
-		// とりあえず初めのk個の点を代表点とする。
-		/**
 		 * Collect factors with the data.
 		 * n: dataの要素数
 		 * d: dataの次元数
@@ -120,11 +114,6 @@ public class LloydClustering implements Clustering {
 		this.d = dataSpace.get(0).length;
 		this.k = khiki;
 		System.out.println(d);
-		// debug
-		for(int i = 0; i < d; i++){
-			System.out.println(dataSpace.get(0)[i]);
-		
-		}
 		/**
 		 * Initiation
 		 * Select initial delegation.
@@ -164,22 +153,17 @@ public class LloydClustering implements Clustering {
 			 * Find each the nearest factor from each deletion.
 			 */
 			int tmpn = dataSpace.size();
-			for(int i = 0; i < k; i++){
-				// どこかで無限ループ
+			for(int i = 0; i < k; i++){	
 				for(int j = 0; j < tmpn; j++){
 					suggest = dataSpace.get(j);
 					if (distance(suggest, delegation[i]) < minDistance){
 						minDistance = distance(suggest, delegation[i]);
 						r = j;
 					}
-					minDistance = 1.0 / 0.0;
 				}
-				System.out.println(i);
-				System.out.println(r);
-				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));      // この追加法に変わるものを確認して下さい
-				dataSpace.remove(r);
+				minDistance = 1.0 / 0.0;// bugとりました
+				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r)); // この追加法に変わるものを確認して下さい
 				r = 0;
-				tmpn--;
 			}
 			/*
 			 * 代表点を再構成
@@ -188,7 +172,7 @@ public class LloydClustering implements Clustering {
 			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 0.000001)){
+			if (judgeDelegation(delegation, newDelegation, 0.0001)){
 				/*
 				 * 代表点を更新します
 				 */

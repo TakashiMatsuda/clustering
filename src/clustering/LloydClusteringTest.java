@@ -13,12 +13,17 @@ import java.util.List;
 
 import org.junit.Test;
 
-
+/**
+ * 
+ * @author takashi
+ *
+ */
 public class LloydClusteringTest {
-	
-	static int DATASIZE = 100;
-	static int JIGEN = 2;
-	static int CLUSTERNUM = 10;
+// クラスタリング結果が全部同じ
+	static int DATASIZE =1000;
+	static int JIGEN = 5;
+	static int CLUSTERNUM = 2;
+	static boolean TWOTRUE = false;
 
 	@Test
 	public void testKsplit() {
@@ -27,7 +32,7 @@ public class LloydClusteringTest {
 		for(int i = 0; i < DATASIZE; i++){
 			tmp = new double[JIGEN];
 			for(int j = 0; j < JIGEN; j++){
-				tmp[j] = Math.random();
+				tmp[j] = Math.random();// 乱数の質を確認
 			}
 			data.add(tmp);
 			tmp = null;
@@ -45,25 +50,27 @@ public class LloydClusteringTest {
 				Writer out = null;
 				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
-				out.write("x\ty\n");
+				//out.write("x\ty\n");
 				ArrayList<double[]> mold = fruit.get(i);
-				for(int j = 0; j < mold.size(); j++){// DATASIZE == mold.size()ではない
+				for(int j = 0; j < mold.size(); j++){
 					/*
-					 * 2次元のみに対応。3次元以降を作るときはこの下を変えてください。
+					 * 2次元・多次元切り替え制御、書き込み操作
 					 */
-					//out.write(mold.get(j)[0] + "	" + mold.get(j)[1] + "\n");
-					for(int k = 0; k < JIGEN; k++){
-						out.write(mold.get(j)[k] + "   ");
+					if (TWOTRUE){
+						out.write(mold.get(j)[0] + " " + mold.get(j)[1] + "\n");
 					}
-					out.write("\n");
+					else{
+						for(int k = 0; k < JIGEN; k++){
+						out.write(mold.get(j)[k] + "   ");
+						}
+						out.write("\n");
+					}
 				}
 				out.close();
 			}
 		} catch (IOException e){
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 	@Test
