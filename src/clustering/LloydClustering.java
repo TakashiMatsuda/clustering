@@ -57,6 +57,8 @@ public class LloydClustering implements Clustering {
 	 * @param clusters 評価するクラスタ集合
 	 * @return 新しい代表点集合
 	 */
+	
+	@SuppressWarnings("rawtypes")
 	private double[][] refresh(List<ArrayList<double[]>> clusters){// 次はこの関数を仕上げます
 		double[][] fruit = new double[k][d];
 		double sum;
@@ -72,18 +74,35 @@ public class LloydClustering implements Clustering {
 				sum = 0;
 				l = clusters.get(i).get(j).length;
 				for(int u = 0; u < l; u++){
-					sum += ((List)(clusters.get(i))).get(j)[u];
+					sum += ((double[]) ((ArrayList) (clusters.get(i))).get(j))[u];
 				}
-				
+				fruit[i][j] = sum;
 				
 			}
-			
+			dist = distance(fruit[i]);
+			for(int j = 0; j < d; j++){
+				fruit[i][j] = fruit[i][j] / dist;
+			}
 		}
 		return fruit;
 	}
 	
 	
-	
+	/**
+	 * 
+	 * オーバーライドの試験的な何か
+	 * 
+	 * @param tmp
+	 * @return absolute value
+	 */
+	private double distance(double[] x) {
+		double sum = 0;
+		for (int i = 0; i < x.length; i++){
+			sum += Math.pow(x[i], 2.0);
+		}
+		return Math.sqrt(sum);
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
