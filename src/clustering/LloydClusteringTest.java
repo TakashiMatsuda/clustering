@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class LloydClusteringTest {
 	
-	static int DATASIZE = 1000;
+	static int DATASIZE = 100000;
 	static int JIGEN = 2;
 	static int CLUSTERNUM = 10;
 
@@ -33,16 +33,15 @@ public class LloydClusteringTest {
 		
 		LloydClustering exa = new LloydClustering();
 		List<ArrayList<double[]>> fruit = exa.Ksplit(CLUSTERNUM, data);
-		// fruitを描画したい
 		// tsvファイルに出力します。
-		
+		// rjavaの存在
 		try{
 			for(int i = 0; i < CLUSTERNUM; i++){
 				/*
 				 * ファイルの名前を作成
 				 */
 				Writer out = null;
-				File output = new File("clusteringresult" + i + ".tsv");
+				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
 				out.write("x	y\n");
 				ArrayList<double[]> mold = fruit.get(i);

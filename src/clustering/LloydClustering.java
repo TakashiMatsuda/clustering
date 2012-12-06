@@ -42,7 +42,6 @@ public class LloydClustering implements Clustering {
 	 */
 	private boolean judgeDelegation(double[][] a, double[][] b, double threshold){
 		double sum = 0;
-		double sumsum;
 		for (int i = 0; i < a.length; i++){
 			sum += distance(a[i], b[i]);
 		}
@@ -130,14 +129,13 @@ public class LloydClustering implements Clustering {
 		for(int i = 0; i < k; i++){
 			delegation[i] = dataSpace.get(i);
 		}
-		
-		
 		/*
 		 * Clustering and reclustering
 		 * clustersを空集合として初期化
 		 */
 		List<ArrayList<double[]>> clusters = new LinkedList<ArrayList<double[]>>();
 		// 一度選ばれた要素はdataから消去されなければならない
+		// 進捗状況を表示しよう
 		/*
 		 * 各クラスタの初期化、最初は代表点を一つ入れる
 		 */
@@ -151,15 +149,24 @@ public class LloydClustering implements Clustering {
 		double minDistance = 1.0 / 0.0;
 		double[][] newDelegation = new double[k][d];
 		int r = 0;
-		
+		int c = 0;
+		int s = dataSpace.size();
 		// 今のところ無限ループでした。
 		// 各メソッドを整備したい。
 		while(true){
+			/*
+			 * 進捗状況を表示
+			 */
+			if ((c % 1) == 0){
+				System.out.println("クラスタリング実行中・・・・" + c + " / " + s);
+			}
+			
 			/*
 			 * Find each the nearest factor from each deletion.
 			 */
 			int tmpn = dataSpace.size();
 			for(int i = 0; i < k; i++){
+				// どこかで無限ループ
 				for(int j = 0; j < tmpn; j++){
 					suggest = dataSpace.get(j);
 					if (distance(suggest, delegation[i]) < minDistance){
@@ -169,8 +176,9 @@ public class LloydClustering implements Clustering {
 				}
 				// ArrayListのsetで起こる挙動を調べて下さい
 				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));// この追加法に変わるものを確認して下さい
-				// 次はこれの挙動を確認します。
-				
+				dataSpace.remove(r);
+				r = 0;
+				tmpn--;
 			}
 			
 			/*
@@ -191,7 +199,7 @@ public class LloydClustering implements Clustering {
 			else{
 				break;
 			}
-			
+			c++;
 		}
 		return clusters;
 	}
