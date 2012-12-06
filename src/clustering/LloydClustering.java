@@ -71,7 +71,9 @@ public class LloydClustering implements Clustering {
 				 * 誤差二乗平均を計算
 				 */
 				sum = 0;
-				l = clusters.get(i).get(j).length;
+				System.out.println(clusters.size());
+				System.out.println(clusters.get(i).size());
+				l = clusters.get(i).get(j).length;// error
 				for(int u = 0; u < l; u++){
 					sum += ((double[]) ((ArrayList) (clusters.get(i))).get(j))[u];
 				}
@@ -88,9 +90,8 @@ public class LloydClustering implements Clustering {
 	
 	
 	/**
-	 * 
-	 * オーバーライドの試験的な何か
-	 * 
+	 * オーバーライドしてみました
+	 * ベクトルのノルム
 	 * @param tmp
 	 * @return absolute value
 	 */
@@ -103,7 +104,6 @@ public class LloydClustering implements Clustering {
 	}
 	
 	
-	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	
@@ -114,7 +114,7 @@ public class LloydClustering implements Clustering {
 		 */
 		// とりあえず初めのk個の点を代表点とする。
 		/**
-		 * Colect factors with the data.
+		 * Collect factors with the data.
 		 * n: dataの要素数
 		 * d: dataの次元数
 		 */
@@ -130,12 +130,10 @@ public class LloydClustering implements Clustering {
 			delegation[i] = dataSpace.get(i);
 		}
 		/*
-		 * Clustering and reclustering
+		 * Clustering
 		 * clustersを空集合として初期化
 		 */
 		List<ArrayList<double[]>> clusters = new LinkedList<ArrayList<double[]>>();
-		// 一度選ばれた要素はdataから消去されなければならない
-		// 進捗状況を表示しよう
 		/*
 		 * 各クラスタの初期化、最初は代表点を一つ入れる
 		 */
@@ -143,8 +141,7 @@ public class LloydClustering implements Clustering {
 			ArrayList<double[]> w = new ArrayList<double[]>();
 			w.add(delegation[i]);
 			clusters.add(w);
-		}
-		
+		}		
 		double[] suggest = new double[d];
 		double minDistance = 1.0 / 0.0;
 		double[][] newDelegation = new double[k][d];
@@ -158,8 +155,6 @@ public class LloydClustering implements Clustering {
 			if ((c % 1) == 0){
 				System.out.println("クラスタリング実行中・・・・" + c + " / " + s);
 			}
-			// まったく同じデータが出されているだけ
-			// 内部処理に目を光らせて確認してください
 						// ハッカーはバグの一糸混入しないコードを初めから書く
 			/*
 			 * Find each the nearest factor from each deletion.
@@ -174,24 +169,20 @@ public class LloydClustering implements Clustering {
 						r = j;
 					}
 				}
-				// ArrayListのsetで起こる挙動を調べて下さい
 				// このへん怪しい
 				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));// この追加法に変わるものを確認して下さい
 				dataSpace.remove(r);
 				r = 0;
 				tmpn--;
 			}
-			
 			/*
 			 * 代表点を再構成
 			 */
 			newDelegation = refresh(clusters);
-			
-			
 			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 0.01)){
+			if (judgeDelegation(delegation, newDelegation, 0.00001)){
 				/*
 				 * 代表点を更新します
 				 */

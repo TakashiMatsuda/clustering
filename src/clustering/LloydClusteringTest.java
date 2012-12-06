@@ -13,11 +13,12 @@ import java.util.List;
 
 import org.junit.Test;
 
+
 public class LloydClusteringTest {
 	
-	static int DATASIZE = 1000;
-	static int JIGEN = 2;
-	static int CLUSTERNUM = 10;
+	static int DATASIZE = 10000;
+	static int JIGEN = 5;
+	static int CLUSTERNUM = 100;
 
 	@Test
 	public void testKsplit() {
@@ -25,10 +26,12 @@ public class LloydClusteringTest {
 		LinkedList<double[]> data = new LinkedList<double[]>();
 		double[] tmp = new double[JIGEN];
 		for(int i = 0; i < DATASIZE; i++){
+			tmp = new double[JIGEN];
 			for(int j = 0; j < JIGEN; j++){
 				tmp[j] = Math.random();
 			}
 			data.add(tmp);
+			tmp = null;
 		}
 		
 		LloydClustering exa = new LloydClustering();
@@ -49,7 +52,11 @@ public class LloydClusteringTest {
 					/*
 					 * 2次元のみに対応。3次元以降を作るときはこの下を変えてください。
 					 */
-					out.write(mold.get(j)[0] + "	" + mold.get(j)[1] + "\n");
+					//out.write(mold.get(j)[0] + "	" + mold.get(j)[1] + "\n");
+					for(int k = 0; k < JIGEN; k++){
+						out.write(mold.get(j)[k] + "   ");
+					}
+					out.write("/n");
 				}
 				out.close();
 			}
