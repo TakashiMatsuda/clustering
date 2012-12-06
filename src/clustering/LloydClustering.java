@@ -151,8 +151,6 @@ public class LloydClustering implements Clustering {
 		int r = 0;
 		int c = 0;
 		int s = dataSpace.size();
-		// 今のところ無限ループでした。
-		// 各メソッドを整備したい。
 		while(true){
 			/*
 			 * 進捗状況を表示
@@ -160,7 +158,9 @@ public class LloydClustering implements Clustering {
 			if ((c % 1) == 0){
 				System.out.println("クラスタリング実行中・・・・" + c + " / " + s);
 			}
-			
+			// まったく同じデータが出されているだけ
+			// 内部処理に目を光らせて確認してください
+						// ハッカーはバグの一糸混入しないコードを初めから書く
 			/*
 			 * Find each the nearest factor from each deletion.
 			 */
@@ -175,6 +175,7 @@ public class LloydClustering implements Clustering {
 					}
 				}
 				// ArrayListのsetで起こる挙動を調べて下さい
+				// このへん怪しい
 				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));// この追加法に変わるものを確認して下さい
 				dataSpace.remove(r);
 				r = 0;
@@ -190,7 +191,7 @@ public class LloydClustering implements Clustering {
 			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 0.1)){
+			if (judgeDelegation(delegation, newDelegation, 0.01)){
 				/*
 				 * 代表点を更新します
 				 */

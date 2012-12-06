@@ -15,7 +15,7 @@ import org.junit.Test;
 
 public class LloydClusteringTest {
 	
-	static int DATASIZE = 100000;
+	static int DATASIZE = 1000;
 	static int JIGEN = 2;
 	static int CLUSTERNUM = 10;
 
