@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+
 /**
  * This class includes some methods for Lloyd way to k-means clustering.
  * @author tks
@@ -58,27 +59,24 @@ public class LloydClustering implements Clustering {
 	 */
 	
 	@SuppressWarnings("rawtypes")
-	private double[][] refresh(List<ArrayList<double[]>> clusters){// 次はこの関数を仕上げます
+	private double[][] refresh(List<ArrayList<double[]>> clusters){
 		double[][] fruit = new double[k][d];
 		double sum;
-		// 総距離
 		double dist;
-		int l;// メモリより計算量を優先
+		int l;
 		for (int i = 0; i < k; i++){
 			dist = 0;
-			for(int j = 0; j < d; j++){
+			for(int j = 0; j < d; j++){// 
+				// ここから下、
 				/*
 				 * 誤差二乗平均を計算
 				 */
 				sum = 0;
-				System.out.println(clusters.size());
-				System.out.println(clusters.get(i).size());
-				l = clusters.get(i).get(j).length;// error
+				l = clusters.get(i).size();
 				for(int u = 0; u < l; u++){
-					sum += ((double[]) ((ArrayList) (clusters.get(i))).get(j))[u];
+					sum += ((double[]) ((ArrayList) (clusters.get(i))).get(u))[j];
 				}
 				fruit[i][j] = sum;
-				
 			}
 			dist = distance(fruit[i]);
 			for(int j = 0; j < d; j++){
@@ -107,7 +105,7 @@ public class LloydClustering implements Clustering {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	
-	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
+	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {
 		/**
 		 * data: データ集合
 		 * k: 目標クラスタリングの数
@@ -121,6 +119,12 @@ public class LloydClustering implements Clustering {
 		this.n = dataSpace.size();
 		this.d = dataSpace.get(0).length;
 		this.k = khiki;
+		System.out.println(d);
+		// debug
+		for(int i = 0; i < d; i++){
+			System.out.println(dataSpace.get(0)[i]);
+		
+		}
 		/**
 		 * Initiation
 		 * Select initial delegation.
@@ -141,7 +145,7 @@ public class LloydClustering implements Clustering {
 			ArrayList<double[]> w = new ArrayList<double[]>();
 			w.add(delegation[i]);
 			clusters.add(w);
-		}		
+		}
 		double[] suggest = new double[d];
 		double minDistance = 1.0 / 0.0;
 		double[][] newDelegation = new double[k][d];
@@ -168,9 +172,11 @@ public class LloydClustering implements Clustering {
 						minDistance = distance(suggest, delegation[i]);
 						r = j;
 					}
+					minDistance = 1.0 / 0.0;
 				}
-				// このへん怪しい
-				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));// この追加法に変わるものを確認して下さい
+				System.out.println(i);
+				System.out.println(r);
+				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));      // この追加法に変わるものを確認して下さい
 				dataSpace.remove(r);
 				r = 0;
 				tmpn--;
@@ -182,7 +188,7 @@ public class LloydClustering implements Clustering {
 			/*
 			 * 代表点が変化しているかを確認、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 0.00001)){
+			if (judgeDelegation(delegation, newDelegation, 0.000001)){
 				/*
 				 * 代表点を更新します
 				 */

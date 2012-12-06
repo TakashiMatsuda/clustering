@@ -16,13 +16,12 @@ import org.junit.Test;
 
 public class LloydClusteringTest {
 	
-	static int DATASIZE = 10000;
-	static int JIGEN = 5;
-	static int CLUSTERNUM = 100;
+	static int DATASIZE = 100;
+	static int JIGEN = 2;
+	static int CLUSTERNUM = 10;
 
 	@Test
 	public void testKsplit() {
-		// データ要素数1000, 次元数2のテスト
 		LinkedList<double[]> data = new LinkedList<double[]>();
 		double[] tmp = new double[JIGEN];
 		for(int i = 0; i < DATASIZE; i++){
@@ -35,7 +34,7 @@ public class LloydClusteringTest {
 		}
 		
 		LloydClustering exa = new LloydClustering();
-		List<ArrayList<double[]>> fruit = exa.Ksplit(CLUSTERNUM, data);
+		List<ArrayList<double[]>> fruit = exa.Ksplit(CLUSTERNUM, data);// 
 		// tsvファイルに出力します。
 		// rjavaの存在
 		try{
@@ -46,7 +45,7 @@ public class LloydClusteringTest {
 				Writer out = null;
 				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
-				out.write("x	y\n");
+				out.write("x\ty\n");
 				ArrayList<double[]> mold = fruit.get(i);
 				for(int j = 0; j < mold.size(); j++){// DATASIZE == mold.size()ではない
 					/*
@@ -56,7 +55,7 @@ public class LloydClusteringTest {
 					for(int k = 0; k < JIGEN; k++){
 						out.write(mold.get(j)[k] + "   ");
 					}
-					out.write("/n");
+					out.write("\n");
 				}
 				out.close();
 			}
