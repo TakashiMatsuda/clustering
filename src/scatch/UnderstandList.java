@@ -19,11 +19,7 @@ public class UnderstandList {
 	public static void main(String[] args){
 		/*
 		 * 適当にリストを作成
-		 * 
-		 * 
 		 */
-		
-		
 		LinkedList<ArrayList<Integer>> tester = new LinkedList<ArrayList<Integer>>();
 		/*
 		 * 順番に整数を格納
