@@ -102,18 +102,18 @@ public class LloydClustering implements Clustering {
 		}
 		return Math.sqrt(sum);
 	}
-
+	
+	
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
+	
 	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {// 型変更、下流を書き直してください
 		/**
 		 * data: データ集合
 		 * k: 目標クラスタリングの数
 		 */
-		// 実装の手間と計算コストの点から
 		// とりあえず初めのk個の点を代表点とする。
-		
-		
 		/**
 		 * Colect factors with the data.
 		 * n: dataの要素数

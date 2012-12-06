@@ -21,6 +21,9 @@ public class HamerlyClustering{
 	 */
 	public List<double[][]> Ksplit(int k, LinkedList<double[]> data) {
 		// TODO 自動生成されたメソッド・スタブ
+		
+		
+		
 		return null;
 	}
 
