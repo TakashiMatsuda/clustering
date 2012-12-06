@@ -9,9 +9,16 @@ import java.util.List;
  * @author takashi
  *
  */
-public class HamerlyClustering implements Clustering {
+public class HamerlyClustering{
 
-	@Override
+	//@Override
+	// 型変更、こっちの方が速いから
+	/**
+	 * 
+	 * @param k
+	 * @param data
+	 * @return
+	 */
 	public List<double[][]> Ksplit(int k, LinkedList<double[]> data) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;

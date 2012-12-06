@@ -46,12 +46,11 @@ public class LloydClusteringTest {
 				out = new BufferedWriter(new FileWriter(output));
 				out.write("x	y\n");
 				ArrayList<double[]> mold = fruit.get(i);
-				
-				for(int j = 0; j < DATASIZE; j++){
+				for(int j = 0; j < mold.size(); j++){// DATASIZE == mold.size()ではない
 					/*
 					 * 2次元のみに対応。3次元以降を作るときはこの下を変えてください。
 					 */
-					out.write(mold.get(j)[0] + "	" + mold.get(j)[1]);
+					out.write(mold.get(j)[0] + "	" + mold.get(j)[1] + "\n");
 				}
 				out.close();
 			}
