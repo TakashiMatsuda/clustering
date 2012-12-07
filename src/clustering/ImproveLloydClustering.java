@@ -133,7 +133,7 @@ public class ImproveLloydClustering implements Clustering {
 			double[][] newDelegation = new double[k][d];
 			int r = 0;
 			int c = 0;
-			while(c < 10){
+			while(true){
 				newDelegation = new double[k][d];
 				
 				/*
@@ -148,29 +148,33 @@ public class ImproveLloydClustering implements Clustering {
 				 * Find each the nearest factor from each deletion.
 				 */
 				// すべてクラスタ0に格納されている
-				for(int i = 0; i < k; i++){
-					System.out.println(i +"番クラスタの代表点" + delegation[i][0] + "　" + delegation[i][1]);
-				}
+				//for(int i = 0; i < k; i++){
+					//System.out.println(i +"番クラスタの代表点" + delegation[i][0] + "　" + delegation[i][1]);
+			//	}
 				for(int j = 0; j < dataSpace.size(); j++){
-					if ((j % 1000) == 0){
-						System.out.println("点" + j);
-					}
+					//if ((j % 1000) == 0){
+						//System.out.println("点" + j);
+					//}
 					/*
 					 *  一番近い代表点を選択する
 					 */
 					// ここが集中
 					for(int i = 0; i < k; i++){
-						System.out.println(i);
+					//	System.out.println(i);
 						suggest = delegation[i];
+						// minDistanceのスコープに注目
+						//System.out.println("代表点" + i + "番との距離" + distance(suggest, dataSpace.get(j)) + "記録距離　" + minDistance);
 						if (distance(suggest, dataSpace.get(j)) < minDistance){
-							minDistance = distance(suggest, delegation[i]);
+						//	System.out.println("クラスタリング割ふり入った");
+							minDistance = distance(suggest, dataSpace.get(j));
 							r = i;
 						}
+						suggest = null;
 						
 					}
 					indicator[j][r] = 1; 
-					System.out.println(j + "は　"  +  r  + "　番クラスタです　　" + dataSpace.get(j)[0] + "　" + dataSpace.get(j)[1] + "　<->　"  + 
-					delegation[r][0] + "　" + delegation[r][1]);
+					// System.out.println(j + "は　"  +  r  + "　番クラスタです　　" + dataSpace.get(j)[0] + "　" + dataSpace.get(j)[1] + "　<->　"  + 
+					// delegation[r][0] + "　" + delegation[r][1]);
 					r = 0;
 					minDistance = 1.0 / 0.0;
 				}
@@ -180,16 +184,16 @@ public class ImproveLloydClustering implements Clustering {
 				 * 代表点を再構成
 				 */
 				System.out.println("REFRESHING DELEGATION......");// 一周しか回らない、かってにbreakしている
-				System.out.println(delegation[0][0]);
+				//System.out.println(delegation[0][0]);
 				newDelegation = refresh(dataSpace);
 				// refreshが動いてない
-				System.out.println(newDelegation[0][0]);
+				//System.out.println(newDelegation[0][0]);
 				
 				
 				/*
 				 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 				 */
-				if (judgeDelegation(delegation, newDelegation, 0.0)){
+				if (judgeDelegation(delegation, newDelegation, 0.000001)){
 					delegation = newDelegation.clone();
 					newDelegation = null;
 				}

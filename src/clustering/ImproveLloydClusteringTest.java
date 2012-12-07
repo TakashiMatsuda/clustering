@@ -14,9 +14,9 @@ import java.util.List;
 import org.junit.Test;
 
 public class ImproveLloydClusteringTest {
-	static final int DATASIZE =50;
-	static final int JIGEN = 5;
-	static final int CLUSTERNUM = 2;
+	static final int DATASIZE =10000;
+	static final int JIGEN = 3;
+	static final int CLUSTERNUM = 4;
 	static final boolean TWOTRUE = true;
 	
 	@Test
