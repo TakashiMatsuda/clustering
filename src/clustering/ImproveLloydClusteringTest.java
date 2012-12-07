@@ -32,9 +32,49 @@ public class ImproveLloydClusteringTest {
 			tmp = null;
 		}
 		ImproveLloydClustering exa = new ImproveLloydClustering();
-		byte[][] fruit = exa.Ksplit(CLUSTERNUM, data);// 
+		byte[][] fruit = exa.Ksplit(CLUSTERNUM, data);
 		// tsvファイルに出力します。
 		// rjavaの存在
+		try{
+			for(int i = 0; i < CLUSTERNUM; i++){
+				/*
+				 * ファイルの名前を作成
+				 */
+				Writer out = null;
+				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
+				out = new BufferedWriter(new FileWriter(output));
+				//out.write("x\ty\n");
+				// このあたりから怪しくなってくる
+				// dataとfruitを参照しながら書き込む
+				// 左辺は保持、右辺になんとかもってくる
+				
+				ArrayList<double[]> mold = new ArrayList<double[]>();
+				
+				for(int u = 0; u < data.size(); u++){
+					if (fruit[u][i] == 1){
+						mold.add(data.get(u));
+					}
+				}
+				
+				for(int j = 0; j < mold.size(); j++){
+					/*
+					 * 2次元・多次元切り替え制御、書き込み操作
+					 */
+					if (TWOTRUE){
+						out.write(mold.get(j)[0] + " " + mold.get(j)[1] + "\n");
+					}
+					else{
+						for(int k = 0; k < JIGEN; k++){
+						out.write(mold.get(j)[k] + "   ");
+						}
+						out.write("\n");
+					}
+				}
+				out.close();
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
 }

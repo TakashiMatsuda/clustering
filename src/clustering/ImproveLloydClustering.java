@@ -9,6 +9,8 @@ import java.util.List;
  *
  */
 public class ImproveLloydClustering implements Clustering {
+		private static final boolean DEBUG = false;
+	
 		private int n;
 		private int d;
 		private int k;
@@ -132,7 +134,7 @@ public class ImproveLloydClustering implements Clustering {
 			int r = 0;
 			int c = 0;
 			int s = dataSpace.size();
-			while(true){
+			while(c < 100){
 				newDelegation = new double[k][d];
 				/*
 				 * 進捗状況を表示
@@ -165,20 +167,26 @@ public class ImproveLloydClustering implements Clustering {
 				/*
 				 * 代表点を再構成
 				 */
-				System.out.println("REFRESHING DELEGATION......");
+				System.out.println("REFRESHING DELEGATION......");// 一周しか回らない、かってにbreakしている
+				System.out.println(delegation[0][0]);
 				newDelegation = refresh(dataSpace);
+				// refreshが動いてない
+				System.out.println(newDelegation[0][0]);
 				/*
 				 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 				 */
+				
+				if (DEBUG){
 				if (judgeDelegation(delegation, newDelegation, 0.0)){
 					delegation = newDelegation.clone();
 					newDelegation = null;
 				}
-				
 				else{
-					System.out.println(distance(delegation[0], newDelegation[0]));
+					System.out.println("終了します");
 					break;
 				}
+				}
+				
 				c++;
 			}
 			return indicator;
