@@ -13,11 +13,18 @@ import java.util.List;
 
 import org.junit.Test;
 
+
+/**
+ * Complete code.
+ * @author takashi
+ *
+ */
+@SuppressWarnings("unused")
 public class ImproveLloydClusteringTest {
 	static final int DATASIZE =10000;
 	static final int JIGEN = 3;
 	static final int CLUSTERNUM = 4;
-	static final boolean TWOTRUE = true;
+	static final boolean TWOTRUE = false;// ここを変化させてテスト;
 	
 	@Test
 	public void testKsplit() {
