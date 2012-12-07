@@ -154,6 +154,7 @@ public class LloydClustering implements Clustering {
 				System.out.println("クラスタリング実行中・・・・" + c + " / " + s);
 			}
 						// ハッカーはバグの一糸混入しないコードを初めから書く
+			// 改良したアルゴリズムを実装
 			/*
 			 * Find each the nearest factor from each deletion.
 			 */
@@ -167,7 +168,7 @@ public class LloydClustering implements Clustering {
 					}
 				}
 				minDistance = 1.0 / 0.0;// bugとりました
-				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r)); // この追加法に変わるものを確認して下さい
+				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));
 				r = 0;
 			}
 			/*
