@@ -60,7 +60,7 @@ public class ImproveLloydClustering implements Clustering {
 		 */
 		
 		@SuppressWarnings("rawtypes")
-		private double[][] refresh(LinkedList<double[]> dataSpace){
+		private double[][] refresh(LinkedList<double[]> dataSpace){			
 			double[][] fruit = new double[k][d];
 			double dist;
 			for (int i = 0; i < k; i++){
@@ -75,10 +75,10 @@ public class ImproveLloydClustering implements Clustering {
 					}
 					fruit[i][j] = child / mother;
 				}
-				dist = distance(fruit[i]);
-				for(int j = 0; j < d; j++){
-					fruit[i][j] = fruit[i][j] / dist;
-				}
+				//dist = distance(fruit[i]);
+				//for(int j = 0; j < d; j++){
+					//fruit[i][j] = fruit[i][j] / dist;
+				//}
 			}
 			return fruit;
 		}
@@ -133,19 +133,19 @@ public class ImproveLloydClustering implements Clustering {
 			int c = 0;
 			int s = dataSpace.size();
 			while(true){
+				newDelegation = new double[k][d];
 				/*
 				 * 進捗状況を表示
 				 */
 				if ((c % 1) == 0){
 					System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
 				}
-				// ハッカーはバグの一糸混入しないコードを初めから書く
 				/*
 				 * Find each the nearest factor from each deletion.
 				 */
 				// 書き換え終了しました・・・・
 				for(int j = 0; j < dataSpace.size(); j++){
-					if ((j % 10) == 0){
+					if ((j % 1000) == 0){
 						System.out.println("点" + j);
 					}
 					// 一番近い代表点を選択する
@@ -170,9 +170,11 @@ public class ImproveLloydClustering implements Clustering {
 				/*
 				 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 				 */
-				if (judgeDelegation(delegation, newDelegation, 0.00000000001)){
-					delegation = newDelegation;
+				if (judgeDelegation(delegation, newDelegation, 0.0)){
+					delegation = newDelegation.clone();
+					newDelegation = null;
 				}
+				
 				else{
 					System.out.println(distance(delegation[0], newDelegation[0]));
 					break;
