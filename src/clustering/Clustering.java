@@ -16,6 +16,6 @@ public interface Clustering {
 	 * @param data
 	 * @return
 	 */
-	public List<ArrayList<double[]>> Ksplit(int k, LinkedList<double[]> data);
+	public byte[][] Ksplit(int k, LinkedList<double[]> data);
 	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * This class includes some methods for Lloyd way to k-means clustering.
+ * 
  * @author tks
  *	
  */
@@ -153,7 +154,7 @@ public class LloydClustering implements Clustering {
 			if ((c % 1) == 0){
 				System.out.println("クラスタリング実行中・・・・" + c + " / " + s);
 			}
-						// ハッカーはバグの一糸混入しないコードを初めから書く
+			// ハッカーはバグの一糸混入しないコードを初めから書く
 			// 改良したアルゴリズムを実装
 			/*
 			 * Find each the nearest factor from each deletion.
