@@ -113,7 +113,8 @@ public class LloydClustering implements Clustering {
 		this.n = dataSpace.size();
 		this.d = dataSpace.get(0).length;
 		this.k = khiki;
-		System.out.println(d);
+
+		
 		/**
 		 * Initiation
 		 * Select initial delegation.
@@ -122,11 +123,15 @@ public class LloydClustering implements Clustering {
 		for(int i = 0; i < k; i++){
 			delegation[i] = dataSpace.get(i);
 		}
+		
+		
 		/*
 		 * Clustering
 		 * clustersを空集合として初期化
 		 */
 		List<ArrayList<double[]>> clusters = new LinkedList<ArrayList<double[]>>();
+		
+		
 		/*
 		 * 各クラスタの初期化、最初は代表点を一つ入れる
 		 */
