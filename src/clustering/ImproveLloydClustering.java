@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ImproveLloydClustering implements Clustering {
 		private static final boolean DEBUG = false;
-	
+		
 		private int n;
 		private int d;
 		private int k;
@@ -62,7 +62,7 @@ public class ImproveLloydClustering implements Clustering {
 		 */
 		
 		@SuppressWarnings("rawtypes")
-		private double[][] refresh(LinkedList<double[]> dataSpace){			
+		private double[][] refresh(LinkedList<double[]> dataSpace){	
 			double[][] fruit = new double[k][d];
 			double dist;
 			for (int i = 0; i < k; i++){
@@ -115,7 +115,7 @@ public class ImproveLloydClustering implements Clustering {
 			this.n = dataSpace.size();
 			this.d = dataSpace.get(0).length;
 			this.k = khiki;
-			indicator = new byte[n][k];
+			this.indicator = new byte[n][k];
 			
 			
 			/**
@@ -133,36 +133,48 @@ public class ImproveLloydClustering implements Clustering {
 			double[][] newDelegation = new double[k][d];
 			int r = 0;
 			int c = 0;
-			int s = dataSpace.size();
-			while(c < 100){
+			while(c < 10){
 				newDelegation = new double[k][d];
+				
 				/*
 				 * 進捗状況を表示
 				 */
 				if ((c % 1) == 0){
 					System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
 				}
+				
+				
 				/*
 				 * Find each the nearest factor from each deletion.
 				 */
-				// 書き換え終了しました・・・・
+				// すべてクラスタ0に格納されている
+				for(int i = 0; i < k; i++){
+					System.out.println(i +"番クラスタの代表点" + delegation[i][0] + "　" + delegation[i][1]);
+				}
 				for(int j = 0; j < dataSpace.size(); j++){
 					if ((j % 1000) == 0){
 						System.out.println("点" + j);
 					}
-					// 一番近い代表点を選択する
+					/*
+					 *  一番近い代表点を選択する
+					 */
+					// ここが集中
 					for(int i = 0; i < k; i++){
-						indicator[j][i] = 0;
+						System.out.println(i);
 						suggest = delegation[i];
 						if (distance(suggest, dataSpace.get(j)) < minDistance){
 							minDistance = distance(suggest, delegation[i]);
 							r = i;
 						}
+						
 					}
 					indicator[j][r] = 1; 
+					System.out.println(j + "は　"  +  r  + "　番クラスタです　　" + dataSpace.get(j)[0] + "　" + dataSpace.get(j)[1] + "　<->　"  + 
+					delegation[r][0] + "　" + delegation[r][1]);
 					r = 0;
 					minDistance = 1.0 / 0.0;
 				}
+				
 				
 				/*
 				 * 代表点を再構成
@@ -172,11 +184,11 @@ public class ImproveLloydClustering implements Clustering {
 				newDelegation = refresh(dataSpace);
 				// refreshが動いてない
 				System.out.println(newDelegation[0][0]);
+				
+				
 				/*
 				 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 				 */
-				
-				if (DEBUG){
 				if (judgeDelegation(delegation, newDelegation, 0.0)){
 					delegation = newDelegation.clone();
 					newDelegation = null;
@@ -185,11 +197,13 @@ public class ImproveLloydClustering implements Clustering {
 					System.out.println("終了します");
 					break;
 				}
-				}
-				
 				c++;
 			}
 			return indicator;
+		}
+		
+		ImproveLloydClustering(){
+			
 		}
 
 }

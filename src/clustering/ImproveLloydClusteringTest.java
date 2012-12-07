@@ -14,9 +14,9 @@ import java.util.List;
 import org.junit.Test;
 
 public class ImproveLloydClusteringTest {
-	static final int DATASIZE =5000;
+	static final int DATASIZE =50;
 	static final int JIGEN = 5;
-	static final int CLUSTERNUM = 100;
+	static final int CLUSTERNUM = 2;
 	static final boolean TWOTRUE = true;
 	
 	@Test
@@ -33,8 +33,6 @@ public class ImproveLloydClusteringTest {
 		}
 		ImproveLloydClustering exa = new ImproveLloydClustering();
 		byte[][] fruit = exa.Ksplit(CLUSTERNUM, data);
-		// tsvファイルに出力します。
-		// rjavaの存在
 		try{
 			for(int i = 0; i < CLUSTERNUM; i++){
 				/*
@@ -43,18 +41,15 @@ public class ImproveLloydClusteringTest {
 				Writer out = null;
 				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
-				//out.write("x\ty\n");
-				// このあたりから怪しくなってくる
-				// dataとfruitを参照しながら書き込む
-				// 左辺は保持、右辺になんとかもってくる
+				
 				
 				ArrayList<double[]> mold = new ArrayList<double[]>();
-				
 				for(int u = 0; u < data.size(); u++){
 					if (fruit[u][i] == 1){
 						mold.add(data.get(u));
 					}
 				}
+				
 				
 				for(int j = 0; j < mold.size(); j++){
 					/*
