@@ -20,10 +20,10 @@ import org.junit.Test;
  */
 public class LloydClusteringTest {
 // クラスタリング結果が全部同じ
-	static int DATASIZE =1000;
-	static int JIGEN = 5;
-	static int CLUSTERNUM = 2;
-	static boolean TWOTRUE = false;
+	static final int DATASIZE =1000;
+	static final int JIGEN = 5;
+	static final int CLUSTERNUM = 2;
+	static final boolean TWOTRUE = false;
 
 	@Test
 	public void testKsplit() {

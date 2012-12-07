@@ -113,7 +113,7 @@ public class LloydClustering implements Clustering {
 		this.n = dataSpace.size();
 		this.d = dataSpace.get(0).length;
 		this.k = khiki;
-
+		boolean[][] indicator = new boolean[n][k];
 		
 		/**
 		 * Initiation
@@ -158,17 +158,16 @@ public class LloydClustering implements Clustering {
 			/*
 			 * Find each the nearest factor from each deletion.
 			 */
-			int tmpn = dataSpace.size();
 			for(int i = 0; i < k; i++){	
-				for(int j = 0; j < tmpn; j++){
+				for(int j = 0; j < dataSpace.size(); j++){// イテレータを用いた書き方の方が高速で安全
 					suggest = dataSpace.get(j);
 					if (distance(suggest, delegation[i]) < minDistance){
 						minDistance = distance(suggest, delegation[i]);
 						r = j;
 					}
 				}
-				minDistance = 1.0 / 0.0;// bugとりました
-				((ArrayList) clusters.get(i)).add((double[]) dataSpace.get(r));
+				minDistance = 1.0 / 0.0;
+				((ArrayList) clusters.get(i)).add((double[]) dataSpace.remove(r));
 				r = 0;
 			}
 			/*
@@ -176,12 +175,9 @@ public class LloydClustering implements Clustering {
 			 */
 			newDelegation = refresh(clusters);
 			/*
-			 * 代表点が変化しているかを確認、変化していなかったら返す
+			 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 			 */
 			if (judgeDelegation(delegation, newDelegation, 0.0001)){
-				/*
-				 * 代表点を更新します
-				 */
 				delegation = newDelegation;
 			}
 			else{
@@ -191,6 +187,7 @@ public class LloydClustering implements Clustering {
 		}
 		return clusters;
 	}
+	
 	
 	LloydClustering(){
 		
