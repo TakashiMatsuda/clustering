@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class HamerlyClustering implements Clustering{
 	private static final boolean DEBUG = false;
+	private static final boolean MUGEN = true;
 	
 	private int n;
 	private int d;
@@ -84,7 +85,7 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return
 	 */
-	private byte[] refreshDelegation(byte[] memberIndicator, LinkedList<double[]> dataSpace){
+	private double[] refreshDelegation(byte[] memberIndicator, LinkedList<double[]> dataSpace){
 		
 		return null;
 	}
@@ -109,7 +110,7 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return
 	 */
-	private List<int[]> refreshBorder(byte[] memberIndicator, LinkedList<double[]> dataSpace){
+	private int[] refreshBorder(byte[] memberIndicator, LinkedList<double[]> dataSpace){
 		
 		return null;
 	}
@@ -141,11 +142,43 @@ public class HamerlyClustering implements Clustering{
 		 */
 		double[][] delegation  = initializeDelegation(k, dataSpace);
 		indicator = initializeClusters(k, dataSpace);
+		for(int i = 0; i < k; i++){
+			borderIndicator.add(refreshBorder(indicator[i], dataSpace));
+		}
 		
 		
+		/*
+		 * Update parameters
+		 */
+		while(MUGEN){
+			for(int i = 0; i < k; i++){
+				delegation[i] = refreshDelegation(indicator[i], dataSpace);
+			}
+			
+			
+			/*
+			 * Hamer Algorithms
+			 */
+			
+			
+			
+			// (ここまで)
+			
+			/*
+			 * Update parameters
+			 */
+			indicator = refreshIndicator(indicator, dataSpace);
+			for(int i = 0; i < k; i++){
+				borderIndicator.set(i, refreshBorder(indicator[i], dataSpace));
+			}
+		}
 		
 		
 		return null;
 	}
-
+	
+	
+	HamerlyClustering(){
+		
+	}
 }
