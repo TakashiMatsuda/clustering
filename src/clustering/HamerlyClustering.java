@@ -114,11 +114,37 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return 
 	 */
-	private double refreshUpperBorder(LinkedList<double[]> dataSpace){
+	private double initializeUpperBorder(int i, byte[][] indicator, 
+			double[][] delegation, LinkedList<double[]> dataSpace){
 		
-		
+		return distance(dataSpace.get(i), delegation[clusterNumber(i, indicator)]);
 	}
 	
+	
+	
+	/**
+	 * 
+	 * @param i
+	 * @param indicator
+	 * @param delegation
+	 * @param dataSpace
+	 * @return
+	 */
+	private double initializeLowerBorder(int i, byte[][] indicator,
+			double[][] delegation, LinkedList<double[]> dataSpace) {
+		
+		double min = 1.0 / 0.0;
+		double d = 0;
+		for(int j = 0; j < k; j++){
+			d = distance(dataSpace.get(i), delegation[j]);
+			if (clusterNumber(i, indicator) != j){
+				if (d < min){
+					min = d;
+				}
+			}
+		}
+		return min;// あとでこれをほとんどコピーした2番目に近いクラスター番号を返す関数を定義する可能性が高い
+	}
 	
 	
 	/**
@@ -158,7 +184,7 @@ public class HamerlyClustering implements Clustering{
 	private int clusterNumber(int i, byte[][] indicator){
 		int fruit = -1;
 		for(int j = 0; j < k; j++){
-			if (indicator[j][i] != 1){
+			if (indicator[i][j] != 1){
 				continue;
 			}
 			else{
@@ -170,7 +196,7 @@ public class HamerlyClustering implements Clustering{
 	
 	
 	
-	
+	// このメソッドはこのクラスの外にあってもいい
 	/**
 	 *  Hamerlyの方法によるクラスタリングの結果を返します。
 	 * @param k : target clusters number
@@ -183,7 +209,7 @@ public class HamerlyClustering implements Clustering{
 		this.d = dataSpace.get(0).length;
 		this.k = k;
 		
-		this.indicator = new byte[k][n];// 仕様を変更した、以後注意して下さい
+		this.indicator = new byte[n][k];// 仕様を変更した、以後注意して下さい
 		// 設計ミス、仕様をもとにもどしたい
 		
 		/*
@@ -198,7 +224,10 @@ public class HamerlyClustering implements Clustering{
 		 */
 		double[] upperBorder = new double[n];
 		double[] lowerBorder = new double[n];
-		
+		for(int i = 0; i < k; i++){
+			upperBorder[i] = initializeUpperBorder(i, indicator, delegation, dataSpace);
+			lowerBorder[i] = initializeLowerBorder(i, indicator, delegation, dataSpace);
+		}
 		
 		
 		
@@ -242,7 +271,7 @@ public class HamerlyClustering implements Clustering{
 		return null;
 	}
 	
-	
+
 	// コンストラクタで必要な引数をすべてとってしまう方が美しいなあ
 	/**
 	 * 
