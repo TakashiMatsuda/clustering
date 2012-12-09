@@ -57,13 +57,38 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return Initialized delegation for clusters.
 	 */
-	public double[][] initializeDelegation(int k, LinkedList<double[]> dataSpace){
+	private double[][] initializeDelegation(int k, LinkedList<double[]> dataSpace){
 		double[][] fruit = new double[k][d];
 		for(int i = 0; i < k; i++){
 			fruit[i] = dataSpace.get(i);
 		}
 		return fruit;
 	}
+	
+	/**
+	 * 	Initialize clusters in Hamer's way
+	 * @param k
+	 * @param dataSpace
+	 * @return
+	 */
+	private byte[][] initializeClusters(int k, LinkedList<double[]> dataSpace){
+		byte[][] fruit = new byte[n][k];
+		
+		return null;
+	}
+	
+	
+	/**
+	 * Refresh border in the cluster
+	 * @param memberIndicator
+	 * @param dataSpace
+	 * @return
+	 */
+	private List<double[]> refreshBorder(byte[] memberIndicator, LinkedList<double[]> dataSpace){
+		
+		return null;
+	}
+	
 	
 	/**
 	 *  Hamerの方法によるクラスタリングの結果を返します。
@@ -76,11 +101,14 @@ public class HamerlyClustering implements Clustering{
 		this.n = dataSpace.size();
 		this.d = dataSpace.get(0).length;
 		this.k = k;
-		this.indicator = new byte[n][k];
+		this.indicator = new byte[k][n];// 仕様を変更した、以後注意して下さい
+		// 各clusterとその上限と下限の対応が必要
 		
-		
+		/*
+		 * Initialize parameters
+		 */
 		double[][] delegation  = initializeDelegation(k, dataSpace);
-		
+		indicator = initializeClusters(k, dataSpace);
 		
 		
 		
