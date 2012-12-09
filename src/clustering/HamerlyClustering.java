@@ -52,12 +52,12 @@ public class HamerlyClustering implements Clustering{
 	}
 	
 	/**
-	 * Initiation method for Hamer's way
+	 * Initiation method for delegation in Hamer's way
 	 * @param k
 	 * @param dataSpace
 	 * @return Initialized delegation for clusters.
 	 */
-	public double[][] initiation(int k, LinkedList<double[]> dataSpace){
+	public double[][] initializeDelegation(int k, LinkedList<double[]> dataSpace){
 		double[][] fruit = new double[k][d];
 		for(int i = 0; i < k; i++){
 			fruit[i] = dataSpace.get(i);
@@ -79,7 +79,7 @@ public class HamerlyClustering implements Clustering{
 		this.indicator = new byte[n][k];
 		
 		
-		double[][] delegation  = initiation(k, dataSpace);
+		double[][] delegation  = initializeDelegation(k, dataSpace);
 		
 		
 		
