@@ -15,8 +15,10 @@ import org.junit.Test;
 public class HamerlyClusteringTest {
 	static final int DATASIZE =10000;
 	static final int JIGEN = 2;
-	static final int CLUSTERNUM = 4;
-	static final boolean TWOTRUE = true;// ここを変化させてテスト;
+	static final int CLUSTERNUM = 3;
+	static final boolean TWOTRUE = false;// ここを変化させてテスト;
+	
+	// 書き込みを抜いた純粋テストを制作して、CPU時間を計測して下さい。
 	
 	@Test
 	public void testKsplit() {

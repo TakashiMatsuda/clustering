@@ -12,7 +12,7 @@ import java.util.List;
 public class HamerlyClustering implements Clustering{
 	private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
-	private static final double threshold = 0.00001;
+	private static final double threshold = 0.000001;
 	
 	private int n;
 	private int d;
