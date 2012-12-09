@@ -171,6 +171,8 @@ public class HamerlyClustering implements Clustering{
 			for(int i = 0; i < k; i++){
 				borderIndicator.set(i, refreshBorder(indicator[i], dataSpace));
 			}
+			
+			break;// 無駄なバグ表示を避ける為、あとで除去して下さい
 		}
 		
 		
