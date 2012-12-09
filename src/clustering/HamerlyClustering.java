@@ -109,12 +109,12 @@ public class HamerlyClustering implements Clustering{
 	
 	
 	/**
-	 * Refresh border in the cluster
+	 * Refresh upperBorder
 	 * @param memberIndicator
 	 * @param dataSpace
-	 * @return
+	 * @return 
 	 */
-	private int[] refreshBorder(byte[] memberIndicator, LinkedList<double[]> dataSpace){
+	private double refreshUpperBorder(LinkedList<double[]> dataSpace, ){
 		
 		return null;
 	}
@@ -180,7 +180,9 @@ public class HamerlyClustering implements Clustering{
 		this.n = dataSpace.size();
 		this.d = dataSpace.get(0).length;
 		this.k = k;
+		
 		this.indicator = new byte[k][n];// 仕様を変更した、以後注意して下さい
+		// 設計ミス、仕様をもとにもどしたい
 		
 
 		/*
@@ -199,6 +201,16 @@ public class HamerlyClustering implements Clustering{
 		for(int i = 0; i < k; i++){
 			borderIndicator.add(refreshBorder(indicator[i], dataSpace));
 		}
+		
+		
+		
+		/*
+		 * Initialize the upperBorder and lowerBorder of the distance between a point and its cluster.
+		 */
+		double[] upperBorder = new double[n];
+		double[] lowerBorder = new double[n];
+		
+		
 		
 		
 		/*
@@ -220,7 +232,9 @@ public class HamerlyClustering implements Clustering{
 				int nearCluster = minDelegate(clnum, delegation);
 				double m = Math.max(distance(delegation[nearCluster], delegation[clnum]) / 2.0, 
 						distance(delegation[nearCluster], dataSpace.get(i)));
-				
+				if (upperBorder[i] > m){
+					
+				}
 			}
 			
 			
