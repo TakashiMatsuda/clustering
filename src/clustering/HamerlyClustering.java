@@ -9,17 +9,16 @@ import java.util.List;
  * @author takashi
  *
  */
-public class HamerlyClustering{
+public class HamerlyClustering implements Clustering{
 
-	//@Override
-	// 型変更、こっちの方が速いから
 	/**
-	 * 
-	 * @param k
-	 * @param data
-	 * @return
+	 *  Hamerの方法によるクラスタリングの結果を返します。
+	 * @param k : target clusters number
+	 * @param data データ集合
+	 * @return K-means clustering result
 	 */
-	public List<double[][]> Ksplit(int k, LinkedList<double[]> data) {
+	@Override
+	public byte[][] Ksplit(int k, LinkedList<double[]> data) {
 		// TODO 自動生成されたメソッド・スタブ
 		
 		
