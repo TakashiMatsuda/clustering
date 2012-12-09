@@ -22,8 +22,9 @@ public class HamerlyClustering implements Clustering{
 	/**
 	 * 
 	 * ベクトルのノルム
+	 * 実装終了
 	 * @param tmp
-	 * @return absolute value
+	 * @return norm
 	 */
 	private double norm(double[] x) {
 		double sum = 0;
@@ -35,7 +36,7 @@ public class HamerlyClustering implements Clustering{
 	
 	/**
 	 * xとyの次元数が一致していることを確認して下さい!
-	 * 
+	 * 実装終了
 	 * @param x
 	 * @param y
 	 * @return Euclid distance between x and y
@@ -53,7 +54,8 @@ public class HamerlyClustering implements Clustering{
 	}
 	
 	/**
-	 * Initiation method for delegation in Hamer's way
+	 * Initiation method for delegation in Hamerly's way
+	 * 実装終了
 	 * @param k
 	 * @param dataSpace
 	 * @return Initialized delegation for clusters.
@@ -67,13 +69,15 @@ public class HamerlyClustering implements Clustering{
 	}
 	
 	/**
-	 * 	Initialize clusters in Hamer's way
+	 * 	Initialize clusters in Hamerly's way
+	 * 実装終了
 	 * @param k
 	 * @param dataSpace
 	 * @return
 	 */
 	private byte[][] initializeClusters(LinkedList<double[]> dataSpace){
 		byte[][] fruit = new byte[n][k];
+		
 		
 		return null;
 	}
@@ -116,8 +120,57 @@ public class HamerlyClustering implements Clustering{
 	}
 	
 	
+	
 	/**
-	 *  Hamerの方法によるクラスタリングの結果を返します。
+	 * The least distance between delegations 
+	 * @param j
+	 * @param delegation
+	 * @return The nearest delegate number from delegation[j]
+	 */
+	private int minDelegate(int j, double[][] delegation){
+		double suggest = 0;
+		double min = 1.0 / 0.0;
+		int mintag = 0;
+		for(int jj = 0; jj < k; jj++){
+			// jを抜いたもの
+			// oの場合を除けばよい
+			suggest = distance(delegation[j], delegation[jj]);
+			if (suggest != 0){
+				if (suggest < min){
+					min = suggest;
+					mintag  =jj;
+				}
+			}
+		}
+		return mintag;// どれが一番近いかも一緒に返したほうがいい気がする。
+		// クラスを作って格納するのと再計算するのどちらが速いか微妙なところ
+		// この計算のコストはO(k), 大きくないので再計算
+		}
+	
+	
+	
+	/**
+	 * ある点に対してその属するクラスター番号を返す
+	 * @param i
+	 * @param indicator
+	 * @return 所属クラスター番号
+	 */
+	private int clusterNumber(int i, byte[][] indicator){
+		int fruit = -1;
+		for(int j = 0; j < k; j++){
+			if (indicator[j][i] != 1){
+				continue;
+			}
+			else{
+				fruit = j;
+			}
+		}
+		return fruit;
+	}
+	
+	
+	/**
+	 *  Hamerlyの方法によるクラスタリングの結果を返します。
 	 * @param k : target clusters number
 	 * @param data データ集合
 	 * @return K-means clustering result
@@ -128,6 +181,7 @@ public class HamerlyClustering implements Clustering{
 		this.d = dataSpace.get(0).length;
 		this.k = k;
 		this.indicator = new byte[k][n];// 仕様を変更した、以後注意して下さい
+		
 
 		/*
 		 * 各clusterとその上限と下限の対応が必要
@@ -159,7 +213,15 @@ public class HamerlyClustering implements Clustering{
 			/*
 			 * Hamer Algorithms
 			 */
-			
+			// 数学的なバックグラウンドは大丈夫なのか？
+			// Lloydの方法と原理的には同じはず、EMなので局所最適になる
+			for(int i  = 0; i < n; i++){
+				int clnum = clusterNumber(i, indicator);
+				int nearCluster = minDelegate(clnum, delegation);
+				double m = Math.max(distance(delegation[nearCluster], delegation[clnum]) / 2.0, 
+						distance(delegation[nearCluster], dataSpace.get(i)));
+				
+			}
 			
 			
 			// (ここまで)
@@ -169,10 +231,10 @@ public class HamerlyClustering implements Clustering{
 			 */
 			indicator = refreshIndicator(indicator, dataSpace);
 			for(int i = 0; i < k; i++){
-				borderIndicator.set(i, refreshBorder(indicator[i], dataSpace));
+				borderIndicator.set(i, refreshBorder(, dataSpace));
 			}
 			
-			break;// 無駄なバグ表示を避ける為、あとで除去して下さい
+			break;// 無駄なバグ表示を避ける為。あとで除去して下さい
 		}
 		
 		
@@ -180,6 +242,10 @@ public class HamerlyClustering implements Clustering{
 	}
 	
 	
+	// コンストラクタで必要な引数をすべてとってしまう方が美しいなあ
+	/**
+	 * 
+	 */
 	HamerlyClustering(){
 		
 	}

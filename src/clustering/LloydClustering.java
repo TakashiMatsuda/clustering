@@ -11,7 +11,7 @@ import java.util.List;
  * @author tks
  *	
  */
-public class LloydClustering implements Clustering {
+public class LloydClustering  {
 	
 	int n;
 	int d;
@@ -103,7 +103,6 @@ public class LloydClustering implements Clustering {
 	
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
 	
 	public List<ArrayList<double[]>> Ksplit(int khiki, LinkedList<double[]> dataSpace) {
 		/**

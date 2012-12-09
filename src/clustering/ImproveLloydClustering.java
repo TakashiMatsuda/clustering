@@ -192,7 +192,7 @@ public class ImproveLloydClustering implements Clustering {
 				/*
 				 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 				 */
-				if (judgeDelegation(delegation, newDelegation, 0.000001)){
+				if (judgeDelegation(delegation, newDelegation, 0.0000000001)){
 					delegation = newDelegation.clone();
 					newDelegation = null;
 				}
