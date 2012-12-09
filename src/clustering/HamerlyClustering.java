@@ -114,9 +114,9 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return 
 	 */
-	private double refreshUpperBorder(LinkedList<double[]> dataSpace, ){
+	private double refreshUpperBorder(LinkedList<double[]> dataSpace){
 		
-		return null;
+		
 	}
 	
 	
@@ -169,6 +169,8 @@ public class HamerlyClustering implements Clustering{
 	}
 	
 	
+	
+	
 	/**
 	 *  Hamerlyの方法によるクラスタリングの結果を返します。
 	 * @param k : target clusters number
@@ -184,24 +186,11 @@ public class HamerlyClustering implements Clustering{
 		this.indicator = new byte[k][n];// 仕様を変更した、以後注意して下さい
 		// 設計ミス、仕様をもとにもどしたい
 		
-
-		/*
-		 * 各clusterとその上限と下限の対応が必要
-		 * get[0]は下限の点番号
-		 * get[1]は上限の点番号
-		 */
-		List<int[]> borderIndicator = new LinkedList<int[]>();
-		
-		
 		/*
 		 * Initialize parameters
 		 */
 		double[][] delegation  = initializeDelegation(dataSpace);
 		indicator = initializeClusters(dataSpace);
-		for(int i = 0; i < k; i++){
-			borderIndicator.add(refreshBorder(indicator[i], dataSpace));
-		}
-		
 		
 		
 		/*
@@ -232,6 +221,7 @@ public class HamerlyClustering implements Clustering{
 				int nearCluster = minDelegate(clnum, delegation);
 				double m = Math.max(distance(delegation[nearCluster], delegation[clnum]) / 2.0, 
 						distance(delegation[nearCluster], dataSpace.get(i)));
+				
 				if (upperBorder[i] > m){
 					
 				}
@@ -244,9 +234,6 @@ public class HamerlyClustering implements Clustering{
 			 * Update parameters
 			 */
 			indicator = refreshIndicator(indicator, dataSpace);
-			for(int i = 0; i < k; i++){
-				borderIndicator.set(i, refreshBorder(, dataSpace));
-			}
 			
 			break;// 無駄なバグ表示を避ける為。あとで除去して下さい
 		}
