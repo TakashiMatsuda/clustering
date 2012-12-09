@@ -12,6 +12,7 @@ import java.util.List;
 public class HamerlyClustering implements Clustering{
 	private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
+	private static final double threshold = 0.00001;
 	
 	private int n;
 	private int d;
@@ -96,19 +97,7 @@ public class HamerlyClustering implements Clustering{
 	
 	
 	/**
-	 * 
-	 * @param indicator
-	 * @param dataSpace
-	 * @return
-	 */
-	private byte[][] refreshIndicator(byte[][] indicator, LinkedList<double[]> dataSpace){
-		
-		
-		return null;
-	}
-	
-	
-	/**
+	 * 実装完了しています。
 	 * Refresh upperBorder
 	 * @param memberIndicator
 	 * @param dataSpace
@@ -123,7 +112,7 @@ public class HamerlyClustering implements Clustering{
 	
 	
 	/**
-	 * 
+	 * 実装完了しています・・・・
 	 * @param i
 	 * @param indicator
 	 * @param delegation
@@ -148,6 +137,7 @@ public class HamerlyClustering implements Clustering{
 	
 	
 	/**
+	 * 実装完了しています・・・・
 	 * The least distance between delegations 
 	 * @param j
 	 * @param delegation
@@ -177,6 +167,7 @@ public class HamerlyClustering implements Clustering{
 	
 	/**
 	 * ある点に対してその属するクラスター番号を返す
+	 * 実装完了
 	 * @param i
 	 * @param indicator
 	 * @return 所属クラスター番号
@@ -194,6 +185,23 @@ public class HamerlyClustering implements Clustering{
 		return fruit;
 	}
 	
+	
+	/**
+	 * 実装完了
+	 * @param a
+	 * @param b
+	 * @return aとbの間の距離和を計算し、閾値以下だったらfalse, そうでなければtrue
+	 */
+	private boolean judgeDelegation(double[] movingDistance,  double threshold){
+		double sum = 0;
+		for (int j = 0; j < k; j++){
+			sum += movingDistance[j];
+		}
+		if (sum >= threshold)
+			return true;
+		else
+			return false;
+	}
 	
 	
 	// このメソッドはこのクラスの外にあってもいい
@@ -240,35 +248,59 @@ public class HamerlyClustering implements Clustering{
 			}
 			
 			
+			// refreshIndicatorにまかせるべきだったかも・・・
+			// クラスフィールドとして定義すれば、スムーズにvoid型で書けた
 			/*
-			 * Hamer Algorithms
+			 * Hamerly Algorithms
+			 * Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
 			 */
-			// 数学的なバックグラウンドは大丈夫なのか？
-			// Lloydの方法と原理的には同じはず、EMなので局所最適になる
 			for(int i  = 0; i < n; i++){
 				int clnum = clusterNumber(i, indicator);
 				int nearCluster = minDelegate(clnum, delegation);
 				double m = Math.max(distance(delegation[nearCluster], delegation[clnum]) / 2.0, 
 						distance(delegation[nearCluster], dataSpace.get(i)));
-					// 引越しを急いだ方がいいかもしれない
+				// 引越しを急いだ方がいいかもしれない
 				if (upperBorder[i] > m){
-					
+					upperBorder[i] = initializeUpperBorder(i, indicator, delegation, dataSpace);
+					if (upperBorder[i] > m){/* 依然として条件を満たさない */
+						int oldCluster = clusterNumber(i, indicator);
+						int preCluster = 0;// ここ、最隣クラスタ番号を求める
+						if (oldCluster != preCluster){/* 変化していたら関連値を更新 */
+							// indicatorの更新
+							indicator[i][oldCluster] = 0;
+							indicator[i][preCluster] = 1;
+							upperBorder[i] = initializeUpperBorder(i, indicator, delegation, dataSpace);
+							lowerBorder[i] = initializeLowerBorder(i, indicator, delegation, dataSpace);
+						}
+					}
 				}
 			}
 			
+			/* クラスタ番号を主語とする記号の値を更新します*/
+			// 更新途中で更新の必要がないと判断されたら終了します。
+			double[] movingDistance = new double[k];
+			for(int j = 0; j < k; j++){
+				double[] oldDelegate = delegation[j];
+				delegation[j] = refreshDelegation(indicator[j], dataSpace);// ここ、indicatorから新しいクラスタ重心を求める
+				movingDistance[j] = distance(delegation[j], oldDelegate);
+			}
 			
-			// (ここまで)
+			 /* 各点の上界、下界を更新します*/
 			
-			/*
-			 * Update parameters
-			 */
-			indicator = refreshIndicator(indicator, dataSpace);
 			
-			break;// 無駄なバグ表示を避ける為。あとで除去して下さい
+			
+			
+			/* 終了判定 */
+			if (judgeDelegation(movingDistance, threshold)){
+				continue;
+			}
+			else{
+				break;
+			}
 		}
 		
 		
-		return null;
+		return indicator;
 	}
 	
 
