@@ -58,7 +58,7 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return Initialized delegation for clusters.
 	 */
-	private double[][] initializeDelegation(int k, LinkedList<double[]> dataSpace){
+	private double[][] initializeDelegation(LinkedList<double[]> dataSpace){
 		double[][] fruit = new double[k][d];
 		for(int i = 0; i < k; i++){
 			fruit[i] = dataSpace.get(i);
@@ -72,7 +72,7 @@ public class HamerlyClustering implements Clustering{
 	 * @param dataSpace
 	 * @return
 	 */
-	private byte[][] initializeClusters(int k, LinkedList<double[]> dataSpace){
+	private byte[][] initializeClusters(LinkedList<double[]> dataSpace){
 		byte[][] fruit = new byte[n][k];
 		
 		return null;
@@ -140,8 +140,8 @@ public class HamerlyClustering implements Clustering{
 		/*
 		 * Initialize parameters
 		 */
-		double[][] delegation  = initializeDelegation(k, dataSpace);
-		indicator = initializeClusters(k, dataSpace);
+		double[][] delegation  = initializeDelegation(dataSpace);
+		indicator = initializeClusters(dataSpace);
 		for(int i = 0; i < k; i++){
 			borderIndicator.add(refreshBorder(indicator[i], dataSpace));
 		}
