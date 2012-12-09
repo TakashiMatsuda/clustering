@@ -79,12 +79,37 @@ public class HamerlyClustering implements Clustering{
 	
 	
 	/**
+	 * Return new Delegate with each cluster
+	 * @param memberIndicator
+	 * @param dataSpace
+	 * @return
+	 */
+	private byte[] refreshDelegation(byte[] memberIndicator, LinkedList<double[]> dataSpace){
+		
+		return null;
+	}
+	
+	
+	/**
+	 * 
+	 * @param indicator
+	 * @param dataSpace
+	 * @return
+	 */
+	private byte[][] refreshIndicator(byte[][] indicator, LinkedList<double[]> dataSpace){
+		
+		
+		return null;
+	}
+	
+	
+	/**
 	 * Refresh border in the cluster
 	 * @param memberIndicator
 	 * @param dataSpace
 	 * @return
 	 */
-	private List<double[]> refreshBorder(byte[] memberIndicator, LinkedList<double[]> dataSpace){
+	private List<int[]> refreshBorder(byte[] memberIndicator, LinkedList<double[]> dataSpace){
 		
 		return null;
 	}
