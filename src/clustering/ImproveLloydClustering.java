@@ -158,7 +158,6 @@ public class ImproveLloydClustering implements Clustering {
 					/*
 					 *  一番近い代表点を選択する
 					 */
-					// ここが集中
 					for(int i = 0; i < k; i++){
 					//	System.out.println(i);
 						suggest = delegation[i];

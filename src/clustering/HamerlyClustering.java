@@ -51,6 +51,19 @@ public class HamerlyClustering implements Clustering{
 		return Math.sqrt(sum);
 	}
 	
+	/**
+	 * Initiation method for Hamer's way
+	 * @param k
+	 * @param dataSpace
+	 * @return Initialized delegation for clusters.
+	 */
+	public double[][] initiation(int k, LinkedList<double[]> dataSpace){
+		double[][] fruit = new double[k][d];
+		for(int i = 0; i < k; i++){
+			fruit[i] = dataSpace.get(i);
+		}
+		return fruit;
+	}
 	
 	/**
 	 *  Hamerの方法によるクラスタリングの結果を返します。
@@ -59,21 +72,16 @@ public class HamerlyClustering implements Clustering{
 	 * @return K-means clustering result
 	 */
 	@Override
-	public byte[][] Ksplit(int k, LinkedList<double[]> data) {
+	public byte[][] Ksplit(int k, LinkedList<double[]> dataSpace) {
 		this.n = dataSpace.size();
 		this.d = dataSpace.get(0).length;
-		this.k = khiki;
+		this.k = k;
 		this.indicator = new byte[n][k];
 		
 		
-		/**
-		 * Initiation
-		 * Select initial delegation.
-		 */
-		double[][] delegation  = new double[k][d];
-		for(int i = 0; i < k; i++){
-			delegation[i] = dataSpace.get(i);
-		}
+		double[][] delegation  = initiation(k, dataSpace);
+		
+		
 		
 		
 		
