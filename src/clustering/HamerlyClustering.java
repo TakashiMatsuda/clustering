@@ -250,7 +250,7 @@ public class HamerlyClustering implements Clustering{
 				int nearCluster = minDelegate(clnum, delegation);
 				double m = Math.max(distance(delegation[nearCluster], delegation[clnum]) / 2.0, 
 						distance(delegation[nearCluster], dataSpace.get(i)));
-				
+					// 引越しを急いだ方がいいかもしれない
 				if (upperBorder[i] > m){
 					
 				}
