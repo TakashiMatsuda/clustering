@@ -127,7 +127,14 @@ public class HamerlyClustering implements Clustering{
 		this.d = dataSpace.get(0).length;
 		this.k = k;
 		this.indicator = new byte[k][n];// 仕様を変更した、以後注意して下さい
-		// 各clusterとその上限と下限の対応が必要
+
+		/*
+		 * 各clusterとその上限と下限の対応が必要
+		 * get[0]は下限の点番号
+		 * get[1]は上限の点番号
+		 */
+		List<int[]> borderIndicator = new LinkedList<int[]>();
+		
 		
 		/*
 		 * Initialize parameters
