@@ -18,7 +18,7 @@ public class HamerlyClustering implements Clustering{
 	private int d;
 	private int k;
 	private byte[][] indicator;
-	
+	// マンハッタン距離に変えて実験
 
 	/**
 	 * 
@@ -52,6 +52,12 @@ public class HamerlyClustering implements Clustering{
 			sum += Math.pow((x[i] - y[i]), 2.0);
 		}
 		return Math.sqrt(sum);
+		
+		// マンハッタン距離に変えて実験
+//		for(int i = 0; i < x.length; i++){
+//			sum += Math.abs(x[i] - y[i]);
+//		}
+//		return sum;
 	}
 	
 	/**
@@ -99,6 +105,10 @@ public class HamerlyClustering implements Clustering{
 		return fruit;
 	}
 	
+	// columnNumberが低速の可能性
+	// 走らせるごとにkかかる
+	// member参照にはnかかる
+	// 格納しておいた方が吉？
 	
 	/**
 	 * Return new Delegate with each cluster

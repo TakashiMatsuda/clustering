@@ -10,19 +10,32 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class HamerlyClusteringTest {
-	static final int DATASIZE =10000;
-	static final int JIGEN = 2;
-	static final int CLUSTERNUM = 3;
+	static final int DATASIZE =1000;
+	static final int JIGEN = 100;
+	static final int CLUSTERNUM = 10;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
 	
+	// 何かいいクラスタリングサンプルはないかな
+	// Adaboostの実装で用いている特徴ベクトルをクラスタリングするのはどうだろうか
+	// twitter APIで、投稿時刻とツイート数のクラスタリングなどでもいい
+	// 相関を求めるのとどう違うんだろう
+	// 画像解析に使うとか
 	// 書き込みを抜いた純粋テストを制作して、CPU時間を計測して下さい。
 	
-	@Test
-	public void testKsplit() {
-		LinkedList<double[]> data = new LinkedList<double[]>();
+	// マンハッタン距離に変えて実験
+	
+	HamerlyClustering exa;
+	LinkedList<double[]> data;
+	byte[][] fruit;
+	
+	@Before
+	public void beforetestKsplit() {
+		this.data = new LinkedList<double[]>();
 		double[] tmp = new double[JIGEN];
 		for(int i = 0; i < DATASIZE; i++){
 			tmp = new double[JIGEN];
@@ -32,8 +45,17 @@ public class HamerlyClusteringTest {
 			data.add(tmp);
 			tmp = null;
 		}
-		HamerlyClustering exa = new HamerlyClustering();
-		byte[][] fruit = exa.Ksplit(CLUSTERNUM, data);
+		this.exa = new HamerlyClustering();
+	}
+	
+	@Test
+	public void testKsplit() {
+		
+		this.fruit = exa.Ksplit(CLUSTERNUM, data);
+	}
+	
+	@After
+	public void aftertestKsplit(){
 		try{
 			for(int i = 0; i < CLUSTERNUM; i++){
 				/*
