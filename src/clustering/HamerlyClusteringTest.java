@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HamerlyClusteringTest {
-	static final int DATASIZE =1000;
+	static final int DATASIZE =3000;
 	static final int JIGEN = 100;
 	static final int CLUSTERNUM = 10;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
