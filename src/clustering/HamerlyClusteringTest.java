@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class HamerlyClusteringTest {
 	static final int DATASIZE =3000;
-	static final int JIGEN = 100;
+	static final int JIGEN = 10;
 	static final int CLUSTERNUM = 10;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
 	
@@ -29,7 +29,7 @@ public class HamerlyClusteringTest {
 	
 	// マンハッタン距離に変えて実験
 	
-	HamerlyClustering exa;
+	OldHamerlyClustering exa;
 	LinkedList<double[]> data;
 	byte[][] fruit;
 	
@@ -45,7 +45,7 @@ public class HamerlyClusteringTest {
 			data.add(tmp);
 			tmp = null;
 		}
-		this.exa = new HamerlyClustering();
+		this.exa = new OldHamerlyClustering();
 	}
 	
 	@Test

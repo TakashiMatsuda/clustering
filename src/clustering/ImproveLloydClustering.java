@@ -139,7 +139,7 @@ public class ImproveLloydClustering implements Clustering {
 				/*
 				 * 進捗状況を表示
 				 */
-				if ((c % 1) == 0){
+				if ((c % 10) == 0){
 					System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
 				}
 				
@@ -192,7 +192,7 @@ public class ImproveLloydClustering implements Clustering {
 				/*
 				 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 				 */
-				if (judgeDelegation(delegation, newDelegation, 0.0)){
+				if (judgeDelegation(delegation, newDelegation, 0.00001)){
 					delegation = newDelegation.clone();
 					newDelegation = null;
 				}

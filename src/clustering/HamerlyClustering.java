@@ -22,7 +22,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	
 	private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
-	private static final double threshold = 0.000001;
+	private static final double threshold = 0.00001;
 	
 	private HamerlyClusteringData data = new HamerlyClusteringData();
 
@@ -85,6 +85,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * Lloyd way for k-means clustering
 	 * Initialization of the cluster,
 	 * make "indicator"
+	 * data.roomにも書き込みをしています。
 	 * 実装完了しています・・・・
 	 * @param data.k
 	 * @param dataSpace
@@ -105,19 +106,18 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 				}
 			}
 			fruit[i][r] = 1; 
+			data.room[i] = r;
 			r = 0;
 		}
 		
 		return fruit;
 	}
 	
-	// columnNumberが低速の可能性
-	// 走らせるごとにkかかる
-	// member参照にはnかかる
-	// 格納しておいた方が吉？
+
 	/**
 	 * Return new Delegate with each cluster
 	 * クラスタの重心を再計算して返します
+	 * indicatorの形を要求します
 	 * 実装完了しています・・・・
 	 * @param memberIndicator
 	 * @param dataSpace
@@ -159,10 +159,10 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @param dataSpace
 	 * @return 
 	 */
-	private double initializeUpperBorder(int i, byte[][] indicator, 
+	private double initializeUpperBorder(int i,
 			double[][] delegation, LinkedList<double[]> dataSpace){
 		
-		return distance(dataSpace.get(i), delegation[clusterNumber(i, indicator)]);
+		return distance(dataSpace.get(i), delegation[data.room[i]]);
 	}
 	
 	
@@ -175,14 +175,14 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @param dataSpace
 	 * @return
 	 */
-	private double initializeLowerBorder(int i, byte[][] indicator,
+	private double initializeLowerBorder(int i,
 			double[][] delegation, LinkedList<double[]> dataSpace) {
 		
 		double min = 1.0 / 0.0;
 		double d = 0;
 		for(int j = 0; j < data.k; j++){
 			d = distance(dataSpace.get(i), delegation[j]);
-			if (clusterNumber(i, indicator) != j){
+			if (data.room[i] != j){
 				if (d < min){
 					min = d;
 				}
@@ -224,6 +224,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 //	メモリは足りているのだから、indicatorとは別に便利なindicator2みたいのを作ればよい。
 	/**
 	 * ある点に対してその属するクラスター番号を返す
+	 * roomで完全に置き換えられました。
 	 * 実装完了
 	 * @param i
 	 * @param indicator
@@ -280,12 +281,33 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	}
 	
 	
+	/**
+	 * pointからpointに最も近い重心を持つクラスタ番号へと変換します。
+	 * @param point
+	 * @return pointに最も近い重心を持つクラスタ番号
+	 */
+	private int nearestCenter(double[] point, double[][] delegation){
+		int minnum = 0;
+		double dis = 0;
+		double mindis = 1.0 / 0.0;
+		for(int i = 0; i < data.k; i++){
+			dis = distance(point, delegation[i]);
+			if (dis < mindis){
+				minnum = i;
+				mindis = dis;
+			}
+		}
+		return minnum;
+	}
+	
+	
 	// このメソッドはこのクラスの外にあってもいい
 	/* (非 Javadoc)
 	 * @see clustering.AbstractClustering#Ksplit(int, java.util.LinkedList)
 	 */
 	@Override
 	public byte[][] Ksplit(int k, LinkedList<double[]> dataSpace) {
+		System.out.println("クラスタリング中・・・");
 		this.data.n = dataSpace.size();
 		this.data.d = dataSpace.get(0).length;
 		this.data.k = k;
@@ -295,6 +317,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		
 		/*
 		 * Initialize parameters
+		 * 綺麗なやり方ではないが、roomも変更する。
 		 */
 		double[][] delegation  = initializeDelegation(dataSpace);
 		data.indicator = initializeClusters(delegation, dataSpace);
@@ -306,16 +329,17 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		double[] upperBorder = new double[data.n];
 		double[] lowerBorder = new double[data.n];
 		for(int i = 0; i < k; i++){
-			upperBorder[i] = initializeUpperBorder(i, data.indicator, delegation, dataSpace);
-			lowerBorder[i] = initializeLowerBorder(i, data.indicator, delegation, dataSpace);
+			upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
+			lowerBorder[i] = initializeLowerBorder(i, delegation, dataSpace);
 		}
 		
 		
-		
+		int count = 0;
 		/*
 		 * Update parameters
 		 */
 		while(MUGEN){
+			count++;
 			
 			// 未実装部分計画領域
 			// O(k)
@@ -333,27 +357,32 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 			 * Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
 			 */
 			for(int i  = 0; i < data.n; i++){
-				int clnum = clusterNumber(i, data.indicator);
+				int clnum = data.room[i];
 				double m = Math.max(minClusterDistance[clnum] / 2.0, lowerBorder[i]);
 				if (upperBorder[i] > m){
-					upperBorder[i] = initializeUpperBorder(i, data.indicator, delegation, dataSpace);
+					upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
 					if (upperBorder[i] > m){/* 依然として条件を満たさない */
-//						FIXME 最隣クラスタが変化しているかの条件分岐を書き上げる
-						int oldCluster = clusterNumber(i, data.indicator);// 違うかもしれない
-						int preCluster = ;// ここ、最隣クラスタ番号を求める<---未実装
-						if (oldCluster != preCluster){/* 変化していたら関連値を更新 */
+//						FIXME 最隣クラスタが変化しているかの条件分岐を書き上げる -> 完了した？
+//						テスト中
+						
+						
+						int oldCluster = data.room[i];
+						/*
+						 * 所属クラスタ番号を更新する
+						 */
+						data.room[i] = nearestCenter(dataSpace.get(i), delegation);// ここ、この場で（更新）計算して最隣クラスタ番号を求める<---未実装
+						if (oldCluster != data.room[i]){/* 変化していたら関連値を更新 */
 							// indicatorの更新
 							data.indicator[i][oldCluster] = 0;
-							data.indicator[i][preCluster] = 1;
-							upperBorder[i] = initializeUpperBorder(i, data.indicator, delegation, dataSpace);
-							lowerBorder[i] = initializeLowerBorder(i, data.indicator, delegation, dataSpace);
+							data.indicator[i][data.room[i]] = 1;
+							upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
+							lowerBorder[i] = initializeLowerBorder(i, delegation, dataSpace);
 						}
 					}
 				}
 			}
 			
 			/* クラスタ番号を主語とする記号の値を更新します*/
-			// 更新途中で更新の必要がないと判断されたら終了します。
 			double[] movingDistance = new double[k];
 			for(int j = 0; j < k; j++){
 				double[] oldDelegate = delegation[j];
@@ -365,13 +394,16 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 			int r = argMax(movingDistance);
 			// 直打ち、推奨されないけどもとりあえず書きます
 			for(int i = 0; i < data.n; i++){
-				upperBorder[i] = upperBorder[i] + movingDistance[clusterNumber(i, data.indicator)];
+				upperBorder[i] = upperBorder[i] + movingDistance[data.room[i]];
 				lowerBorder[i] = lowerBorder[i] - movingDistance[r];
 			}
 			
 			
 			/* 終了判定 */
 			if (judgeDelegation(movingDistance, threshold)){
+				if (count % 10 == 0){
+					System.err.println(count + "回目のクラスタリングです・・・・ 現在のずれ: " + norm(movingDistance));
+				}
 				continue;
 			}
 			else{
