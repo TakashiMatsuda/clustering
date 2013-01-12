@@ -6,10 +6,20 @@ import java.util.List;
 /**
  * Fast k-means clustering by Hamer.
  * Hamerの方法によるクラスタリングの実装
+ * リファクタリング中。もっと高速化したい。今のままだとアルゴリズムの変更による恩恵が小さい。
  * @author takashi
  *
  */
 public class HamerlyClustering implements Clustering, AbstractClustering{
+	
+	// コンストラクタで必要な引数をすべてとってしまう方が美しいなあ
+	/**
+	 * 
+	 */
+	HamerlyClustering(){
+		
+	}
+	
 	private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
 	private static final double threshold = 0.000001;
@@ -105,7 +115,6 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	// 走らせるごとにkかかる
 	// member参照にはnかかる
 	// 格納しておいた方が吉？
-	
 	/**
 	 * Return new Delegate with each cluster
 	 * クラスタの重心を再計算して返します
@@ -196,22 +205,23 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		int mintag = 0;
 		for(int jj = 0; jj < data.k; jj++){
 			// jを抜いたもの
-			// oの場合を除けばよい
-			suggest = distance(delegation[j], delegation[jj]);
-			if (suggest != 0){
+			// 0の場合を除けばよい
+			if (jj != j){
+				suggest = distance(delegation[j], delegation[jj]);
 				if (suggest < min){
 					min = suggest;
 					mintag  =jj;
 				}
 			}
 		}
-		return mintag;// どれが一番近いかも一緒に返したほうがいい気がする。
-		// クラスを作って格納するのと再計算するのどちらが速いか微妙なところ
+		return mintag;
 		// この計算のコストはO(k), 大きくないので再計算
-		}
+	}
 	
 	
 	
+//	O(k), これはO(1)にできる。するべきですね。
+//	メモリは足りているのだから、indicatorとは別に便利なindicator2みたいのを作ればよい。
 	/**
 	 * ある点に対してその属するクラスター番号を返す
 	 * 実装完了
@@ -281,6 +291,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		this.data.k = k;
 		
 		this.data.indicator = new byte[data.n][k];
+		this.data.room = new int[data.n];
 		
 		/*
 		 * Initialize parameters
@@ -307,11 +318,16 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		while(MUGEN){
 			
 			// 未実装部分計画領域
+			// O(k)
 			double[] minClusterDistance = new double[k];
+			int[] nearestClusterNumber = new int[k];
 			for(int j = 0; j < k; j++){
-				minClusterDistance[j] = distance(delegation[minDelegate(j, delegation)], delegation[j]);
+				nearestClusterNumber[j] = minDelegate(j, delegation);
+				minClusterDistance[j] = distance(delegation[nearestClusterNumber[j]], delegation[j]);
 			}
 			
+			
+//			O(n)
 			/*
 			 * Hamerly Algorithms
 			 * Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
@@ -319,12 +335,12 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 			for(int i  = 0; i < data.n; i++){
 				int clnum = clusterNumber(i, data.indicator);
 				double m = Math.max(minClusterDistance[clnum] / 2.0, lowerBorder[i]);
-				// 引越しを急いだ方がいいかもしれない
 				if (upperBorder[i] > m){
 					upperBorder[i] = initializeUpperBorder(i, data.indicator, delegation, dataSpace);
 					if (upperBorder[i] > m){/* 依然として条件を満たさない */
-						int oldCluster = clusterNumber(i, data.indicator);
-						int preCluster = 0;// ここ、最隣クラスタ番号を求める<---未実装
+//						FIXME 最隣クラスタが変化しているかの条件分岐を書き上げる
+						int oldCluster = clusterNumber(i, data.indicator);// 違うかもしれない
+						int preCluster = ;// ここ、最隣クラスタ番号を求める<---未実装
 						if (oldCluster != preCluster){/* 変化していたら関連値を更新 */
 							// indicatorの更新
 							data.indicator[i][oldCluster] = 0;
@@ -367,12 +383,4 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		return data.indicator;
 	}
 	
-
-	// コンストラクタで必要な引数をすべてとってしまう方が美しいなあ
-	/**
-	 * 
-	 */
-	HamerlyClustering(){
-		
-	}
 }
