@@ -29,7 +29,7 @@ public class HamerlyClusteringTest {
 	
 	// マンハッタン距離に変えて実験
 	
-	OldHamerlyClustering exa;
+	HamerlyClustering exa;
 	LinkedList<double[]> data;
 	byte[][] fruit;
 	
@@ -45,7 +45,7 @@ public class HamerlyClusteringTest {
 			data.add(tmp);
 			tmp = null;
 		}
-		this.exa = new OldHamerlyClustering();
+		this.exa = new HamerlyClustering();
 	}
 	
 	@Test
