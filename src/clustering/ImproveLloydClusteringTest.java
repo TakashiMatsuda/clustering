@@ -21,14 +21,14 @@ import org.junit.Test;
  */
 @SuppressWarnings("unused")
 public class ImproveLloydClusteringTest {
-	static final int DATASIZE =3000;
+	static final int DATASIZE =10000;
 	static final int JIGEN = 10;
 	static final int CLUSTERNUM = 10;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
 	
 	@Test
 	public void testKsplit() {
-		LinkedList<double[]> data = new LinkedList<double[]>();
+		ArrayList<double[]> data = new ArrayList<double[]>();
 		double[] tmp = new double[JIGEN];
 		for(int i = 0; i < DATASIZE; i++){
 			tmp = new double[JIGEN];

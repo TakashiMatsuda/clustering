@@ -1,8 +1,6 @@
 package clustering;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 
@@ -16,6 +14,6 @@ public interface Clustering {
 	 * @param data
 	 * @return
 	 */
-	public byte[][] Ksplit(int k, LinkedList<double[]> data);
+	public byte[][] Ksplit(int k, ArrayList<double[]> data);
 	
 }

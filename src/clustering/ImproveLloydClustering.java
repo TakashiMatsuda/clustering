@@ -8,7 +8,7 @@ import java.util.List;
  * @author takashi
  *
  */
-public class ImproveLloydClustering implements Clustering {
+public class ImproveLloydClustering {
 		private static final boolean DEBUG = false;
 		
 		private int n;
@@ -62,7 +62,7 @@ public class ImproveLloydClustering implements Clustering {
 		 */
 		
 		@SuppressWarnings("rawtypes")
-		private double[][] refresh(LinkedList<double[]> dataSpace){	
+		private double[][] refresh(ArrayList<double[]> dataSpace){	
 			double[][] fruit = new double[k][d];
 			double dist;
 			for (int i = 0; i < k; i++){
@@ -102,9 +102,8 @@ public class ImproveLloydClustering implements Clustering {
 		
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		@Override
-		
-		public byte[][] Ksplit(int khiki, LinkedList<double[]> dataSpace) {
+//		@Override
+		public byte[][] Ksplit(int khiki, ArrayList<double[]> dataSpace) {
 			/**
 			 * Collect factors with the data.
 			 * n: dataの要素数

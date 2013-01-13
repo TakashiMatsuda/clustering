@@ -1,7 +1,6 @@
 package clustering;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Fast k-means clustering by Hamer.
@@ -20,7 +19,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		
 	}
 	
-	private static final boolean DEBUG = false;
+//	private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
 	private static final double threshold = 0.00001;
 	
@@ -73,7 +72,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @param dataSpace
 	 * @return Initialized delegation for clusters.
 	 */
-	private double[][] initializeDelegation(LinkedList<double[]> dataSpace){
+	private double[][] initializeDelegation(ArrayList<double[]> dataSpace){
 		double[][] fruit = new double[data.k][data.d];
 		for(int i = 0; i < data.k; i++){
 			fruit[i] = dataSpace.get(i);
@@ -91,7 +90,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @param dataSpace
 	 * @return the result of k-means clustering by Lloyd algoithm.
 	 */
-	private byte[][] initializeClusters(double[][] delegation, LinkedList<double[]> dataSpace){
+	private byte[][] initializeClusters(double[][] delegation, ArrayList<double[]> dataSpace){
 		byte[][] fruit = new byte[data.n][data.k];
 		double[] suggest = new double[data.d];
 		for(int i = 0; i < data.n; i++){
@@ -118,14 +117,17 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * Return new Delegate with each cluster
 	 * クラスタの重心を再計算して返します
 	 * indicatorの形を要求します
+	 * O(nd)
 	 * 実装完了しています・・・・
 	 * @param memberIndicator
 	 * @param dataSpace
 	 * @return ... (重心) of the cluster
 	 */
-	private double[] refreshDelegation(int j, byte[][] indicator, LinkedList<double[]> dataSpace){
+	private double[] refreshDelegation(int j, byte[][] indicator, ArrayList<double[]> dataSpace){
 		double[] sum = new double[data.d];
 		int num = 0;
+		
+		// ここ、indicatorのしくみを変えればかなり速くなるんじゃないか
 		for(int i = 0; i < data.n; i++){
 			if (indicator[i][j] == 1){
 				num++;
@@ -160,7 +162,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @return 
 	 */
 	private double initializeUpperBorder(int i,
-			double[][] delegation, LinkedList<double[]> dataSpace){
+			double[][] delegation, ArrayList<double[]> dataSpace){
 		
 		return distance(dataSpace.get(i), delegation[data.room[i]]);
 	}
@@ -176,7 +178,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @return
 	 */
 	private double initializeLowerBorder(int i,
-			double[][] delegation, LinkedList<double[]> dataSpace) {
+			double[][] delegation, ArrayList<double[]> dataSpace) {
 		
 		double min = 1.0 / 0.0;
 		double d = 0;
@@ -230,18 +232,18 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @param indicator
 	 * @return 所属クラスター番号
 	 */
-	private int clusterNumber(int i, byte[][] indicator){
-		int fruit = -1;
-		for(int j = 0; j < data.k; j++){
-			if (indicator[i][j] != 1){
-				continue;
-			}
-			else{
-				fruit = j;
-			}
-		}
-		return fruit;
-	}
+//	private int clusterNumber(int i, byte[][] indicator){
+//		int fruit = -1;
+//		for(int j = 0; j < data.k; j++){
+//			if (indicator[i][j] != 1){
+//				continue;
+//			}
+//			else{
+//				fruit = j;
+//			}
+//		}
+//		return fruit;
+//	}
 	
 	
 	/**
@@ -306,7 +308,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 	 * @see clustering.AbstractClustering#Ksplit(int, java.util.LinkedList)
 	 */
 	@Override
-	public byte[][] Ksplit(int k, LinkedList<double[]> dataSpace) {
+	public byte[][] Ksplit(int k, ArrayList<double[]> dataSpace) {
 		System.out.println("クラスタリング中・・・");
 		this.data.n = dataSpace.size();
 		this.data.d = dataSpace.get(0).length;
@@ -341,7 +343,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 		while(MUGEN){
 			count++;
 			
-			// 未実装部分計画領域
+			// 未実装部分計画領域 <- どういうこと？
 			// O(k)
 			double[] minClusterDistance = new double[k];
 			int[] nearestClusterNumber = new int[k];
@@ -362,7 +364,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 				if (upperBorder[i] > m){
 					upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
 					if (upperBorder[i] > m){/* 依然として条件を満たさない */
-						System.err.println("before update");
+//						System.err.println("before update");
 						int oldCluster = data.room[i];
 						/*
 						 * 所属クラスタ番号を更新する
@@ -375,21 +377,22 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 							upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
 							lowerBorder[i] = initializeLowerBorder(i, delegation, dataSpace);
 						}
-						System.err.println("after update");
+//						System.err.println("after update");
 					}
 				}
 			}
-			System.err.println("before refreshing");
-			
 			
 //			ここが低速になっています。
-			/* クラスタ番号を主語とする記号の値を更新します*/
+//			ArrayListの採用で高速化されました。
+			/* クラスタ番号を主語とする記号の値を更新します(重心の再計算)*/
 			double[] movingDistance = new double[k];
 			for(int j = 0; j < k; j++){
-				double[] oldDelegate = delegation[j];
+				double[] oldDelegate = delegation[j];// ここが低速か？
+				// O(ndk)
 				delegation[j] = refreshDelegation(j, data.indicator, dataSpace);
 				movingDistance[j] = distance(delegation[j], oldDelegate);
 			}
+//			ここまで低速です。
 			
 			 /* 各点の上界、下界を更新します*/
 			int r = argMax(movingDistance);
@@ -398,7 +401,6 @@ public class HamerlyClustering implements Clustering, AbstractClustering{
 				upperBorder[i] = upperBorder[i] + movingDistance[data.room[i]];
 				lowerBorder[i] = lowerBorder[i] - movingDistance[r];
 			}
-			System.err.println("after refreshing");
 			
 			/* 終了判定 */
 			if (judgeDelegation(movingDistance, threshold)){

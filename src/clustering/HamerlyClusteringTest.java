@@ -9,13 +9,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class HamerlyClusteringTest {
-	static final int DATASIZE =3000;
+	static final int DATASIZE =10000;
 	static final int JIGEN = 10;
 	static final int CLUSTERNUM = 10;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
@@ -30,12 +31,12 @@ public class HamerlyClusteringTest {
 	// マンハッタン距離に変えて実験
 	
 	HamerlyClustering exa;
-	LinkedList<double[]> data;
+	ArrayList<double[]> data;
 	byte[][] fruit;
 	
 	@Before
 	public void beforetestKsplit() {
-		this.data = new LinkedList<double[]>();
+		this.data = new ArrayList<double[]>();
 		double[] tmp = new double[JIGEN];
 		for(int i = 0; i < DATASIZE; i++){
 			tmp = new double[JIGEN];

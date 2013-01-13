@@ -1,6 +1,7 @@
 package clustering;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+
 
 public interface AbstractClustering {
 
@@ -12,6 +13,6 @@ public interface AbstractClustering {
 	 * @param data データ集合
 	 * @return K-means clustering result
 	 */
-	public abstract byte[][] Ksplit(int k, LinkedList<double[]> dataSpace);
+	public abstract byte[][] Ksplit(int k, ArrayList<double[]> dataSpace);
 
 }
