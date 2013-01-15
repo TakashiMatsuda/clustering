@@ -17,8 +17,8 @@ import org.junit.Test;
 
 public class HamerlyClusteringTest {
 	static final int DATASIZE =10000;
-	static final int JIGEN = 10;
-	static final int CLUSTERNUM = 10;
+	static final int JIGEN = 100;
+	static final int CLUSTERNUM = 100;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
 	
 	// 何かいいクラスタリングサンプルはないかな

@@ -8,29 +8,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 
-/**
- * Complete code.
- * @author takashi
- *
- */
-@SuppressWarnings("unused")
-public class ImproveLloydClusteringTest {
+public class ClusteringTest {
 	static final int DATASIZE =10000;
-	static final int JIGEN = 10;
-	static final int CLUSTERNUM = 10;
+	static final int JIGEN = 100;
+	static final int CLUSTERNUM = 100;
 	static final boolean TWOTRUE = false;// ここを変化させてテスト;
 	
+	// 何かいいクラスタリングサンプルはないかな
+	// Adaboostの実装で用いている特徴ベクトルをクラスタリングするのはどうだろうか
+	// twitter APIで、投稿時刻とツイート数のクラスタリングなどでもいい
+	// 相関を求めるのとどう違うんだろう
+	// 画像解析に使うとか
+	// 書き込みを抜いた純粋テストを制作して、CPU時間を計測して下さい。
 	
+	// マンハッタン距離に変えて実験
 	
-	@Test
-	public void testKsplit() {
-		ArrayList<double[]> data = new ArrayList<double[]>();
+	ImproveLloydClustering exa;
+	ArrayList<double[]> data;
+	byte[][] fruit;
+	
+	@Before
+	public void beforetestKsplit() {
+		this.data = new ArrayList<double[]>();
 		double[] tmp = new double[JIGEN];
 		for(int i = 0; i < DATASIZE; i++){
 			tmp = new double[JIGEN];
@@ -40,15 +45,23 @@ public class ImproveLloydClusteringTest {
 			data.add(tmp);
 			tmp = null;
 		}
-		ImproveLloydClustering exa = new ImproveLloydClustering();
-		byte[][] fruit = exa.Ksplit(CLUSTERNUM, data);
+		this.exa = new ImproveLloydClustering();
+	}
+	
+	@Test
+	public void testKsplit() {
+		this.fruit = exa.Ksplit(CLUSTERNUM, data);
+	}
+	
+	@After
+	public void aftertestKsplit(){
 		try{
 			for(int i = 0; i < CLUSTERNUM; i++){
 				/*
 				 * ファイルの名前を作成
 				 */
 				Writer out = null;
-				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
+				File output = new File(CLUSTERNUM + "_" + JIGEN + "_" + DATASIZE + "Lloyd_result" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
 				
 				

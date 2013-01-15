@@ -63,7 +63,7 @@ public class OldHamerlyClustering implements Clustering{
 	/**
 	 * Initiation method for delegation in Hamerly's way
 	 * 実装終了
-	 * @param k
+	 * @param data.k
 	 * @param dataSpace
 	 * @return Initialized delegation for clusters.
 	 */
@@ -80,7 +80,7 @@ public class OldHamerlyClustering implements Clustering{
 	 * Initialization of the cluster,
 	 * make "indicator"
 	 * 実装完了しています・・・・
-	 * @param k
+	 * @param data.k
 	 * @param dataSpace
 	 * @return the result of k-means clustering by Lloyd algoithm.
 	 */
