@@ -21,13 +21,10 @@ import org.junit.Test;
  */
 @SuppressWarnings("unused")
 public class ImproveLloydClusteringTest {
-	static final int DATASIZE =10000;
-	static final int JIGEN = 10;
-	static final int CLUSTERNUM = 10;
-	static final boolean TWOTRUE = false;// ここを変化させてテスト;
-	
-	
-	
+	static final int DATASIZE =100000;
+	static final int JIGEN = 2;
+	static final int CLUSTERNUM = 1000;
+		
 	@Test
 	public void testKsplit() {
 		ArrayList<double[]> data = new ArrayList<double[]>();
@@ -40,6 +37,8 @@ public class ImproveLloydClusteringTest {
 			data.add(tmp);
 			tmp = null;
 		}
+		
+		
 		ImproveLloydClustering exa = new ImproveLloydClustering();
 		byte[][] fruit = exa.Ksplit(CLUSTERNUM, data);
 		try{
@@ -48,9 +47,8 @@ public class ImproveLloydClusteringTest {
 				 * ファイルの名前を作成
 				 */
 				Writer out = null;
-				File output = new File(CLUSTERNUM + "clusteringresult" + i + ".tsv");
+				File output = new File(CLUSTERNUM + "K_" + JIGEN + "D_" + DATASIZE + "N_Lloyd_result" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
-				
 				
 				ArrayList<double[]> mold = new ArrayList<double[]>();
 				for(int u = 0; u < data.size(); u++){
@@ -59,20 +57,11 @@ public class ImproveLloydClusteringTest {
 					}
 				}
 				
-				
 				for(int j = 0; j < mold.size(); j++){
-					/*
-					 * 2次元・多次元切り替え制御、書き込み操作
-					 */
-					if (TWOTRUE){
-						out.write(mold.get(j)[0] + " " + mold.get(j)[1] + "\n");
-					}
-					else{
-						for(int k = 0; k < JIGEN; k++){
+					for(int k = 0; k < JIGEN; k++){
 						out.write(mold.get(j)[k] + "   ");
-						}
-						out.write("\n");
 					}
+					out.write("\n");
 				}
 				out.close();
 			}

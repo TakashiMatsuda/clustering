@@ -3,14 +3,15 @@ package clustering;
 import java.util.ArrayList;
 
 /**
- * Fast k-means clustering by Hamer. Hamerの方法によるクラスタリングの実装
+ * Fast k-means clustering by Hamerly. Hamerlyの方法によるクラスタリングの実装
  * 
  * 
  * @author takashi
  * 
  */
 public class HamerlyClustering implements Clustering, AbstractClustering {
-	
+//	TODO 各クラスタの要素数を記録するようにコーディング中です。
+
 	/**
 	 * 
 	 */
@@ -20,7 +21,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 
 	// private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
-	private static final double threshold = 1;
+	private static final double threshold = 0.001;
 
 	private HamerlyClusteringData data;
 
@@ -102,14 +103,13 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 			}
 			fruit[i][r] = 1;
 			data.room[i] = r;
+			data.roomsize[r]++;
 			r = 0;
 		}
 
 		return fruit;
 	}
 
-	
-//	FIXME ここの高速化
 	/**
 	 * Return new Delegate with each cluster クラスタの重心を再計算して返します indicatorの形を要求します
 	 * O(nd) 実装完了しています・・・・
@@ -119,33 +119,65 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 * @param dataSpace
 	 * @return ... (重心) of the cluster
 	 */
+	@SuppressWarnings("unused")
 	private double[] refreshDelegation(int j, byte[][] indicator,
 			ArrayList<double[]> dataSpace) {
 		double[] sum = new double[data.d];
 		int num = 0;
 
-//		for (int i = 0; i < data.n; i++) {
-//			if (indicator[i][j] == 1) {
-//				num++;
-//			}
-//			for (int x = 0; x < data.d; x++) {
-//				sum[x] += indicator[i][j] * dataSpace.get(i)[x];
-//			}
-//		}
-
+		// for (int i = 0; i < data.n; i++) {
+		// if (indicator[i][j] == 1) {
+		// num++;
+		// }
+		// for (int x = 0; x < data.d; x++) {
+		// sum[x] += indicator[i][j] * dataSpace.get(i)[x];
+		// }
+		// }
+		
 		for (int i = 0; i < data.n; i++) {
 			if (indicator[i][j] == 1) {
 				num++;
 			}
 		}
+		int numn = data.roomsize[j];
+		
 		for (int x = 0; x < data.d; x++) {
 			for (int i = 0; i < data.n; i++) {
 				sum[x] += indicator[i][j] * dataSpace.get(i)[x];
 			}
-			sum[x] = sum[x] / (double) num;
+//			sum[x] = sum[x] / (double) num;
+			sum[x] = sum[x] / (double) numn;
 		}
 
 		return sum;
+	}
+	
+	
+	
+	/**
+	 * roomへの完全移行が終了しました。高速で重心の更新を行える関数です。。
+	 * O(nd) + O(nk)
+	 * @param dataSpace
+	 * @return
+	 */
+	private double[][] refreshDelegation(ArrayList<double[]> dataSpace) {
+		double[][] sums = new double[data.k][data.d];
+		int[] point = new int[data.k];
+		
+		for(int i = 0; i < data.n; i++){
+			int r = data.room[i];
+			point[r]++;
+			for(int x = 0; x < data.d; x++){
+				sums[r][x] += dataSpace.get(i)[x];
+			}
+		}
+		for(int j = 0; j < data.k; j++){
+			for(int x = 0; x < data.d; x++){
+				sums[j][x] = sums[j][x] / (double) point[j];
+			}
+		}
+		
+		return sums;
 	}
 
 	/**
@@ -242,16 +274,16 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 * @param b
 	 * @return aとbの間の距離和を計算し、閾値以下だったらfalse, そうでなければtrue
 	 */
-//	private boolean judgeDelegation(movingDistance, double threshold) {
-//		double sum = 0;
-//		for (int j = 0; j < data.k; j++) {
-//			sum += movingDistance[j];
-//		}
-//		if (sum >= threshold)
-//			return true;
-//		else
-//			return false;
-//	}
+	// private boolean judgeDelegation(movingDistance, double threshold) {
+	// double sum = 0;
+	// for (int j = 0; j < data.k; j++) {
+	// sum += movingDistance[j];
+	// }
+	// if (sum >= threshold)
+	// return true;
+	// else
+	// return false;
+	// }
 
 	/**
 	 * 実装完了 argmax(i){v}
@@ -299,18 +331,21 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 */
 	@Override
 	public byte[][] Ksplit(int k, ArrayList<double[]> dataSpace) {
-		System.out.println("クラスタリング中・・・・");
+		System.out.println("クラスタリング開始しました・・・・");
 		this.data = new HamerlyClusteringData();
 		this.data.n = dataSpace.size();
 		this.data.d = dataSpace.get(0).length;
 		this.data.k = k;
 
+//		indicatorを廃止するべく、下の２つを導入中です。
 		this.data.indicator = new byte[data.n][k];
 		this.data.room = new int[data.n];
+		this.data.roomsize = new int[data.k];
 
 		/*
 		 * Initialize parameters 綺麗なやり方ではないが、roomも変更する。
 		 */
+		System.out.println("クラスタの初期化中・・・・");// 時間がかかっている
 		double[][] delegation = initializeDelegation(dataSpace);
 		data.indicator = initializeClusters(delegation, dataSpace);
 
@@ -318,25 +353,25 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		 * Initialize the upperBorder and lowerBorder of the distance between a
 		 * point and its cluster.
 		 */
+		System.out.println("上限と下限の初期化中・・・・");
 		double[] upperBorder = new double[data.n];
 		double[] lowerBorder = new double[data.n];
 		for (int i = 0; i < k; i++) {
 			upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
 			lowerBorder[i] = initializeLowerBorder(i, delegation, dataSpace);
 		}
-
+		
+		
+		System.out.println("繰り返しクラスタリングを開始しました・・・・");
 		int count = 0;
 		/*
 		 * Update parameters
 		 */
 		while (MUGEN) {
 			count++;
-			
-			
-//			FIXME 擬似コード通りに条件分岐が行えているか確認する。
-//			全部中に入っているんじゃないか
-//			そもそもどうしてHamerlyの方法が早くできるのかを確認してください
-			
+
+			// 全部中に入っているんじゃないか
+
 			// 未実装部分計画領域 <- どういうこと？
 			// O(k)
 			double[] minClusterDistance = new double[k];
@@ -346,20 +381,35 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 				minClusterDistance[j] = distance(
 						delegation[nearestClusterNumber[j]], delegation[j]);
 			}
+			
 
+			System.out.println("Hamerly");
 			// O(n)
 			/*
 			 * Hamerly Algorithms Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
+			 * 以外とここは軽かった
 			 */
+			int rc = 0;// 何個中に入ってしまったか数えています。
 			for (int i = 0; i < data.n; i++) {
 				int clnum = data.room[i];
+				
+//				ここは軽くなければいけない
+//				条件分岐の工夫で、高速化してみた
 				double m = Math.max(minClusterDistance[clnum] / 2.0,
 						lowerBorder[i]);
-				if (upperBorder[i] > m) {
+				if (upperBorder[i] <= m){
+					continue;
+				}
+				else{
 					upperBorder[i] = initializeUpperBorder(i, delegation,
 							dataSpace);
-					if (upperBorder[i] > m) {/* 依然として条件を満たさない */
-						// System.err.println("before update");
+					if(upperBorder[i] <= m){
+						continue;
+					}
+					else {/* 依然として条件を満たさない */
+						// どのくらいここに入ってきてしまうのかをカウントしている
+						rc++;
+						
 						int oldCluster = data.room[i];
 						/*
 						 * 所属クラスタ番号を更新する
@@ -370,48 +420,58 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 							// indicatorの更新
 							data.indicator[i][oldCluster] = 0;
 							data.indicator[i][data.room[i]] = 1;
+							data.roomsize[oldCluster]--;
+							data.roomsize[data.room[i]]++;
 							upperBorder[i] = initializeUpperBorder(i,
 									delegation, dataSpace);
 							lowerBorder[i] = initializeLowerBorder(i,
 									delegation, dataSpace);
 						}
-						// System.err.println("after update");
+
 					}
 				}
+				
 			}
+			System.out.println("中に入った回数" + rc + "/" + data.n);
+			
 
-			// ここが低速になっています。
-			// ArrayListの採用で高速化されました。
 			/* クラスタ番号を主語とする記号の値を更新します(重心の再計算) */
+//			ここではLloydの方法と差はつかないはず
+//			FIXME 間違っている。これだけじゃ足りないはず。p, c*などコードする。
+			
+			System.out.println("重心の計算");
 			double[] movingDistance = new double[k];
 			double[][] oldDelegate = delegation.clone();
 			double sumMove = 0;
+			delegation = refreshDelegation(dataSpace);
 			for (int j = 0; j < k; j++) {
-				// O(ndk)
-				delegation[j] = refreshDelegation(j, data.indicator, dataSpace);
-				movingDistance[j] = distance(delegation[j], oldDelegate[j]);
+				// O(ndk), これが主だった
+//				delegation[j] = refreshDelegation(j, data.indicator, dataSpace);
+				movingDistance[j] = distance(delegation[j], oldDelegate[j]);// こっちもばかにはできない、次元が増えているので
 				sumMove += movingDistance[j];
 			}
 
 			/* 各点の上界、下界を更新します */
+			System.out.println("上界、下界の更新");
 			int r = argMax(movingDistance);
 			// 直打ち、推奨されないけどもとりあえず書きます
+//			この下、たぶん間違っている。movingDistanceがちゃんと計算されていないのではないか。
+//			FIXME すべて中に入ってしまっている原因を生んでいるのはここだと考えられる。
 			for (int i = 0; i < data.n; i++) {
 				upperBorder[i] = upperBorder[i] + movingDistance[data.room[i]];
 				lowerBorder[i] = lowerBorder[i] - movingDistance[r];
 			}
 
 			/* 終了判定 */
-//			if (judgeDelegation(sumMove, threshold)) {
-			if (sumMove >= threshold){
+			// if (judgeDelegation(sumMove, threshold)) {
+			if (sumMove >= threshold) {
 //				if (count % 10 == 0) {
-					System.err.println(count + "回目のクラスタリングです・・・・現在のずれ:" + sumMove);
+				System.err.println(count + "回目のクラスタリングでした・・・・現在のずれ:" + sumMove);
 //				}
 				continue;
 			} else {
 				break;
 			}
-
 		}
 		System.out.println("クラスタリングが終了しました");
 

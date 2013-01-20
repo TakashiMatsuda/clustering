@@ -1,5 +1,7 @@
 package clustering;
 
+import java.util.LinkedList;
+
 
 /**
  * カプセル化されていません。
@@ -15,7 +17,8 @@ public class HamerlyClusteringData {
 	 * initializeで無断で書き込みを受けます。
 	 */
 	public int[] room;
-
+	public int[] roomsize;
+	
 	public HamerlyClusteringData() {
 	}
 }

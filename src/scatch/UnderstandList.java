@@ -32,6 +32,11 @@ public class UnderstandList {
 			tester.add(data);
 		}
 		
+		/*
+		 * 下はエラーとなる
+		 */
+		ArrayList<double[]> a = new ArrayList<double[]>();
+		a.get(3)[4] = 4;
 		
 		/*
 		 * 乱数で置き換えようとする

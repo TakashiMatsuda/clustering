@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Complete code.
  * 
- * あまりにも高速すぎる。おかしい。 
+ * 所属クラスタが重複しています。修正してください。
  * 
  * @author takashi
  * 
@@ -54,18 +54,16 @@ public class ImproveLloydClustering {
 			sum += distance(a[i], b[i]);
 		}
 
-//		System.err.println("・・・・現在のずれ:" + sum);
+		// System.err.println("・・・・現在のずれ:" + sum);
 		if (sum >= threshold)
 			return true;
 		else
 			return false;
 	}
 
-	
-//	FIXME 計算量を見積もってHamerlyに長所を移植してください。
+	// FIXME 計算量を見積もってHamerlyに長所を移植してください。
 	/**
-	 * 計算量を見積もっています・・・・
-	 * このrefresh関数、Hamerlyにも使えるんじゃないか
+	 * 計算量を見積もっています・・・・ このrefresh関数、Hamerlyにも使えるんじゃないか
 	 * 
 	 * @param clusters
 	 *            評価するクラスタ集合
@@ -86,7 +84,7 @@ public class ImproveLloydClustering {
 				}
 				fruit[i][j] = child / mother;
 			}
-//			FIXME 以下がコメントアウトされた経緯を確かめてください。
+			// FIXME 以下がコメントアウトされた経緯を確かめてください。
 			// dist = distance(fruit[i]);
 			// for(int j = 0; j < d; j++){
 			// fruit[i][j] = fruit[i][j] / dist;
@@ -140,9 +138,9 @@ public class ImproveLloydClustering {
 			/*
 			 * 進捗状況を表示
 			 */
-//			if ((c % 10) == 0) {
-				System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
-//			}
+			// if ((c % 10) == 0) {
+			System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
+			// }
 
 			/*
 			 * Find each the nearest factor from each deletion.
@@ -166,8 +164,9 @@ public class ImproveLloydClustering {
 					// System.out.println("代表点" + i + "番との距離" +
 					// distance(suggest, dataSpace.get(j)) + "記録距離　" +
 					// minDistance);
+
+					data.indicator[j][i] = 0;
 					if (distance(suggest, dataSpace.get(j)) < minDistance) {
-						// System.out.println("クラスタリング割ふり入った");
 						minDistance = distance(suggest, dataSpace.get(j));
 						r = i;
 					}
@@ -185,14 +184,13 @@ public class ImproveLloydClustering {
 			/*
 			 * 代表点を再構成
 			 */
-//			System.err.println("REFRESHING DELEGATION......");
+			// System.err.println("REFRESHING DELEGATION......");
 			newDelegation = refresh(dataSpace);
-			// refreshが動いてない <- 治っている
 
 			/*
 			 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 1)) {
+			if (judgeDelegation(delegation, newDelegation, 0.001)) {
 				delegation = newDelegation.clone();
 				newDelegation = null;
 			} else {
@@ -201,7 +199,7 @@ public class ImproveLloydClustering {
 			c++;
 		}
 		System.out.println("クラスタリングが終了しました");
-		
+
 		return data.indicator;
 	}
 
