@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * 
  */
 public class HamerlyClustering implements Clustering, AbstractClustering {
-//	TODO 各クラスタの要素数を記録するようにコーディング中です。
 
 	/**
 	 * 
@@ -21,10 +20,10 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 
 	// private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
-	private static final double threshold = 0.001;
+	private static final double threshold = 0.000001;
 
 	private HamerlyClusteringData data;
-
+	
 	/**
 	 * 
 	 * ベクトルのノルム 実装終了
@@ -86,28 +85,38 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 * @param dataSpace
 	 * @return the result of k-means clustering by Lloyd algoithm.
 	 */
-	private byte[][] initializeClusters(double[][] delegation,
+	private void initializeClusters(double[][] delegation,
 			ArrayList<double[]> dataSpace) {
-		byte[][] fruit = new byte[data.n][data.k];
-		double[] suggest = new double[data.d];
+//		byte[][] fruit = new byte[data.n][data.k];
+		
 		for (int i = 0; i < data.n; i++) {
 			/* 一番近い代表点を選択する */
 			int r = 0;
 			double minDistance = 1.0 / 0.0;
+			double secondDistance = 1.0 / 0.0;
+			double dis = 0;
 			for (int j = 0; j < data.k; j++) {
-				suggest = delegation[j];
-				if (distance(suggest, dataSpace.get(i)) < minDistance) {
-					minDistance = distance(suggest, dataSpace.get(i));
+				dis = distance(delegation[j], dataSpace.get(i));
+				if (dis < minDistance) {
+					minDistance = dis;
 					r = j;
 				}
+				else{
+					if (dis < secondDistance){
+						secondDistance = dis;
+					}
+				}
 			}
-			fruit[i][r] = 1;
+			data.upperBorders[i] = minDistance;
+			data.lowerBorders[i] = secondDistance;
+//			fruit[i][r] = 1;
 			data.room[i] = r;
 			data.roomsize[r]++;
 			r = 0;
 		}
+		
 
-		return fruit;
+//		return fruit;
 	}
 
 	/**
@@ -226,7 +235,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 * @param delegation
 	 * @return The nearest delegate number from delegation[j]
 	 */
-	private int minDelegate(int j, double[][] delegation) {
+	private double minDelegate(int j, double[][] delegation) {
 		double suggest = 0;
 		double min = 1.0 / 0.0;
 		int mintag = 0;
@@ -241,8 +250,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 				}
 			}
 		}
-		return mintag;
-		// この計算のコストはO(k), 大きくないので再計算
+		return min;
 	}
 
 	// O(k), これはO(1)にできる。するべきですね。
@@ -323,7 +331,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		return minnum;
 	}
 
-	// このメソッドはこのクラスの外にあってもいい
+
 	/*
 	 * (非 Javadoc)
 	 * 
@@ -347,19 +355,20 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		 */
 		System.out.println("クラスタの初期化中・・・・");// 時間がかかっている
 		double[][] delegation = initializeDelegation(dataSpace);
-		data.indicator = initializeClusters(delegation, dataSpace);
+		data.upperBorders = new double[data.n];
+		data.lowerBorders = new double[data.n];
+		initializeClusters(delegation, dataSpace);
 
 		/*
+		 * この操作は上に統合できる。
 		 * Initialize the upperBorder and lowerBorder of the distance between a
 		 * point and its cluster.
 		 */
 		System.out.println("上限と下限の初期化中・・・・");
-		double[] upperBorder = new double[data.n];
-		double[] lowerBorder = new double[data.n];
-		for (int i = 0; i < k; i++) {
-			upperBorder[i] = initializeUpperBorder(i, delegation, dataSpace);
-			lowerBorder[i] = initializeLowerBorder(i, delegation, dataSpace);
-		}
+//		for (int i = 0; i < data.n; i++) {
+//			data.upperBorders[i] = initializeUpperBorder(i, delegation, dataSpace);
+//			data.lowerBorders[i] = initializeLowerBorder(i, delegation, dataSpace);// ここでは
+//		}
 		
 		
 		System.out.println("繰り返しクラスタリングを開始しました・・・・");
@@ -369,62 +378,55 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		 */
 		while (MUGEN) {
 			count++;
-
-			// 全部中に入っているんじゃないか
-
-			// 未実装部分計画領域 <- どういうこと？
-			// O(k)
 			double[] minClusterDistance = new double[k];
 			int[] nearestClusterNumber = new int[k];
-			for (int j = 0; j < k; j++) {
-				nearestClusterNumber[j] = minDelegate(j, delegation);
-				minClusterDistance[j] = distance(
-						delegation[nearestClusterNumber[j]], delegation[j]);
+//			for (int j = 0; j < k; j++) {
+//				nearestClusterNumber[j] = minDelegate(j, delegation);
+//				minClusterDistance[j] = distance(
+//						delegation[nearestClusterNumber[j]], delegation[j]);
+//			}
+			for(int j = 0; j < data.k; j++){ 
+				minClusterDistance[j] = minDelegate(j, delegation);
 			}
 			
-
 			System.out.println("Hamerly");
-			// O(n)
 			/*
 			 * Hamerly Algorithms Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
-			 * 以外とここは軽かった
 			 */
 			int rc = 0;// 何個中に入ってしまったか数えています。
 			for (int i = 0; i < data.n; i++) {
-				int clnum = data.room[i];
-				
-//				ここは軽くなければいけない
-//				条件分岐の工夫で、高速化してみた
-				double m = Math.max(minClusterDistance[clnum] / 2.0,
-						lowerBorder[i]);
-				if (upperBorder[i] <= m){
+				double m = Math.max(minClusterDistance[data.room[i]] / 2.0,
+						data.lowerBorders[i]);
+				if (data.upperBorders[i] <= m){
 					continue;
 				}
 				else{
-					upperBorder[i] = initializeUpperBorder(i, delegation,
+					data.upperBorders[i] = initializeUpperBorder(i, delegation,
 							dataSpace);
-					if(upperBorder[i] <= m){
+					if(data.upperBorders[i] <= m){
 						continue;
 					}
 					else {/* 依然として条件を満たさない */
-						// どのくらいここに入ってきてしまうのかをカウントしている
-						rc++;
+						rc++;// どのくらいここに入ってきてしまうのかをカウントしている
 						
 						int oldCluster = data.room[i];
 						/*
 						 * 所属クラスタ番号を更新する
+						 * O(nkd)
 						 */
+//						System.out.print("prenewCenter");
 						data.room[i] = nearestCenter(dataSpace.get(i),
 								delegation);
+//						System.out.println("epinewCenter");
 						if (oldCluster != data.room[i]) {/* 変化していたら関連値を更新 */
 							// indicatorの更新
-							data.indicator[i][oldCluster] = 0;
-							data.indicator[i][data.room[i]] = 1;
-							data.roomsize[oldCluster]--;
-							data.roomsize[data.room[i]]++;
-							upperBorder[i] = initializeUpperBorder(i,
+//							data.indicator[i][oldCluster] = 0;
+//							data.indicator[i][data.room[i]] = 1;
+//							data.roomsize[oldCluster]--;
+//							data.roomsize[data.room[i]]++;
+							data.upperBorders[i] = initializeUpperBorder(i,
 									delegation, dataSpace);
-							lowerBorder[i] = initializeLowerBorder(i,
+							data.lowerBorders[i] = initializeLowerBorder(i,
 									delegation, dataSpace);
 						}
 
@@ -436,9 +438,6 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 			
 
 			/* クラスタ番号を主語とする記号の値を更新します(重心の再計算) */
-//			ここではLloydの方法と差はつかないはず
-//			FIXME 間違っている。これだけじゃ足りないはず。p, c*などコードする。
-			
 			System.out.println("重心の計算");
 			double[] movingDistance = new double[k];
 			double[][] oldDelegate = delegation.clone();
@@ -447,19 +446,19 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 			for (int j = 0; j < k; j++) {
 				// O(ndk), これが主だった
 //				delegation[j] = refreshDelegation(j, data.indicator, dataSpace);
-				movingDistance[j] = distance(delegation[j], oldDelegate[j]);// こっちもばかにはできない、次元が増えているので
+				movingDistance[j] = distance(delegation[j], oldDelegate[j]);
+				
 				sumMove += movingDistance[j];
 			}
 
 			/* 各点の上界、下界を更新します */
+			
 			System.out.println("上界、下界の更新");
+//			疑わしい
 			int r = argMax(movingDistance);
-			// 直打ち、推奨されないけどもとりあえず書きます
-//			この下、たぶん間違っている。movingDistanceがちゃんと計算されていないのではないか。
-//			FIXME すべて中に入ってしまっている原因を生んでいるのはここだと考えられる。
 			for (int i = 0; i < data.n; i++) {
-				upperBorder[i] = upperBorder[i] + movingDistance[data.room[i]];
-				lowerBorder[i] = lowerBorder[i] - movingDistance[r];
+				data.upperBorders[i] = data.upperBorders[i] + movingDistance[data.room[i]];
+				data.lowerBorders[i] = data.lowerBorders[i] - movingDistance[r];
 			}
 
 			/* 終了判定 */

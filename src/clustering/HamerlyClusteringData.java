@@ -18,6 +18,8 @@ public class HamerlyClusteringData {
 	 */
 	public int[] room;
 	public int[] roomsize;
+	public double[] upperBorders;
+	public double[] lowerBorders;
 	
 	public HamerlyClusteringData() {
 	}
