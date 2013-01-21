@@ -14,21 +14,7 @@ public class ElkanClustering {
 
 	private ElkanClusteringData data;
 
-	/**
-	 * 
-	 * ベクトルのノルム 実装終了
-	 * 
-	 * @param tmp
-	 * @return norm
-	 */
-	private double norm(double[] x) {
-		double sum = 0;
-		for (int i = 0; i < x.length; i++) {
-			sum += Math.pow(x[i], 2.0);
-		}
-		return Math.sqrt(sum);
-	}
-
+	
 	/**
 	 * xとyの次元数が一致していることを確認して下さい! 実装終了
 	 * 
@@ -96,56 +82,12 @@ public class ElkanClustering {
 				}
 			}
 			data.upperBorders[i] = minDistance;
-			// fruit[i][r] = 1;
 			data.room[i] = r;
-			data.roomsize[r]++;
 			r = 0;
 		}
 
-		// return fruit;
 	}
 
-	/**
-	 * Return new Delegate with each cluster クラスタの重心を再計算して返します indicatorの形を要求します
-	 * O(nd) 実装完了しています・・・・
-	 * 
-	 * 
-	 * @param memberIndicator
-	 * @param dataSpace
-	 * @return ... (重心) of the cluster
-	 */
-//	@SuppressWarnings("unused")
-//	private double[] refreshDelegation(int j, byte[][] indicator,
-//			ArrayList<double[]> dataSpace) {
-//		double[] sum = new double[data.d];
-//		int num = 0;
-//
-//		 for (int i = 0; i < data.n; i++) {
-//		 if (indicator[i][j] == 1) {
-		// num++;
-		// }
-		// for (int x = 0; x < data.d; x++) {
-		// sum[x] += indicator[i][j] * dataSpace.get(i)[x];
-		// }
-		// }
-
-//		for (int i = 0; i < data.n; i++) {
-//			if (indicator[i][j] == 1) {
-//				num++;
-//			}
-//		}
-//		int numn = data.roomsize[j];
-//
-//		for (int x = 0; x < data.d; x++) {
-//			for (int i = 0; i < data.n; i++) {
-//				sum[x] += indicator[i][j] * dataSpace.get(i)[x];
-//			}
-			// sum[x] = sum[x] / (double) num;
-//			sum[x] = sum[x] / (double) numn;
-//		}
-
-//		return sum;
-//	}
 
 	/**
 	 * roomへの完全移行が終了しました。高速で重心の更新を行える関数です。。 O(nd) + O(nk)
@@ -209,7 +151,7 @@ public class ElkanClustering {
 //				}
 //			}
 		}
-		return l;// あとでこれをほとんどコピーした2番目に近いクラスター番号を返す関数を定義する可能性が高い
+		return l;
 	}
 
 	/**
@@ -237,46 +179,7 @@ public class ElkanClustering {
 		return min;
 	}
 
-	// O(k), これはO(1)にできる。するべきですね。
-	// メモリは足りているのだから、indicatorとは別に便利なindicator2みたいのを作ればよい。
-	/**
-	 * ある点に対してその属するクラスター番号を返す roomで完全に置き換えられました。 実装完了
-	 * 
-	 * @param i
-	 * @param indicator
-	 * @return 所属クラスター番号
-	 */
-	// private int clusterNumber(int i, byte[][] indicator){
-	// int fruit = -1;
-	// for(int j = 0; j < data.k; j++){
-	// if (indicator[i][j] != 1){
-	// continue;
-	// }
-	// else{
-	// fruit = j;
-	// }
-	// }
-	// return fruit;
-	// }
-
-	/**
-	 * 実装完了
-	 * 
-	 * @param a
-	 * @param b
-	 * @return aとbの間の距離和を計算し、閾値以下だったらfalse, そうでなければtrue
-	 */
-	// private boolean judgeDelegation(movingDistance, double threshold) {
-	// double sum = 0;
-	// for (int j = 0; j < data.k; j++) {
-	// sum += movingDistance[j];
-	// }
-	// if (sum >= threshold)
-	// return true;
-	// else
-	// return false;
-	// }
-
+		
 	/**
 	 * 実装完了 argmax(i){v}
 	 * 
@@ -315,10 +218,12 @@ public class ElkanClustering {
 		return minnum;
 	}
 
-	/*
-	 * (非 Javadoc)
+	
+	/**
 	 * 
-	 * @see clustering.AbstractClustering#Ksplit(int, java.util.LinkedList)
+	 * @param k
+	 * @param dataSpace
+	 * @return
 	 */
 	public int[] Ksplit(int k, ArrayList<double[]> dataSpace) {
 		System.out.println("クラスタリング開始しました・・・・");
@@ -339,17 +244,6 @@ public class ElkanClustering {
 		data.lowerBorders = new double[data.n][data.k];
 		initializeClusters(delegation, dataSpace);
 
-		/*
-		 * この操作は上に統合された。 Initialize the upperBorder and lowerBorder of the
-		 * distance between a point and its cluster.
-		 */
-		// for (int i = 0; i < data.n; i++) {
-		// data.upperBorders[i] = initializeUpperBorder(i, delegation,
-		// dataSpace);
-		// data.lowerBorders[i] = initializeLowerBorder(i, delegation,
-		// dataSpace);// ここでは
-		// }
-
 		System.out.println("繰り返しクラスタリングを開始しました・・・・");
 		int count = 0;
 		/*
@@ -359,21 +253,14 @@ public class ElkanClustering {
 			count++;
 			double[] minClusterDistance = new double[k];
 			int[] nearestClusterNumber = new int[k];
-			// for (int j = 0; j < k; j++) {
-			// nearestClusterNumber[j] = minDelegate(j, delegation);
-			// minClusterDistance[j] = distance(
-			// delegation[nearestClusterNumber[j]], delegation[j]);
-			// }
 			for (int j = 0; j < data.k; j++) {
 				minClusterDistance[j] = minDelegate(j, delegation);
 			}
 
 			System.out.println("Hamerly");
 			/*
-			 * Hamerly Algorithms Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
+			 * Elkan Algorithms Elkanの命題の条件分岐を行いながら、クラスタを更新します
 			 */
-			// 初回がなぜ0回なんだろう
-			// だんだん動かなくなってくるはずなのに、変わらずずっと中に入り続けている。
 			int rc = 0;// 何個中に入ってしまったか数えています。
 			for (int i = 0; i < data.n; i++) {
 				double m = Math.max(minClusterDistance[data.room[i]] / 2.0,
@@ -392,16 +279,9 @@ public class ElkanClustering {
 						/*
 						 * 所属クラスタ番号を更新する O(nkd)
 						 */
-						// System.out.print("prenewCenter");
 						data.room[i] = nearestCenter(dataSpace.get(i),
 								delegation);
-						// System.out.println("epinewCenter");
 						if (oldCluster != data.room[i]) {/* 変化していたら関連値を更新 */
-//							 indicatorの更新
-//							 data.indicator[i][oldCluster] = 0;
-//							 data.indicator[i][data.room[i]] = 1;
-							// data.roomsize[oldCluster]--;
-							// data.roomsize[data.room[i]]++;
 							data.upperBorders[i] = initializeUpperBorder(i,
 									delegation, dataSpace);
 							data.lowerBorders[i] = initializeLowerBorder(i,
@@ -421,11 +301,7 @@ public class ElkanClustering {
 			double sumMove = 0;
 			delegation = refreshDelegation(dataSpace);
 			for (int j = 0; j < k; j++) {
-				// O(ndk), これが主だった
-				// delegation[j] = refreshDelegation(j, data.indicator,
-				// dataSpace);
 				movingDistance[j] = distance(delegation[j], oldDelegate[j]);
-
 				sumMove += movingDistance[j];
 			}
 
@@ -442,7 +318,6 @@ public class ElkanClustering {
 			}
 
 			/* 終了判定 */
-			// if (judgeDelegation(sumMove, threshold)) {
 			if (sumMove >= threshold) {
 				// if (count % 10 == 0) {
 				System.err.println(count + "回目のクラスタリングでした・・・・現在のずれ:" + sumMove);
