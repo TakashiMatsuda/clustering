@@ -21,9 +21,9 @@ import org.junit.Test;
  */
 @SuppressWarnings("unused")
 public class ImproveLloydClusteringTest {
-	static final int DATASIZE =100000;
-	static final int JIGEN = 2;
-	static final int CLUSTERNUM = 1000;
+	static final int DATASIZE =10000;
+	static final int JIGEN = 100;
+	static final int CLUSTERNUM = 20;
 		
 	@Test
 	public void testKsplit() {

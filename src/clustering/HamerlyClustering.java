@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Fast k-means clustering by Hamerly. Hamerlyの方法によるクラスタリングの実装
- * 
+ * Hamerly法の効果があまり発揮されない、
+ * ほとんど再クラスタリングしてしまう
  * 
  * @author takashi
  * 
@@ -20,10 +21,10 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 
 	// private static final boolean DEBUG = false;
 	private static final boolean MUGEN = true;
-	private static final double threshold = 0.000001;
+	private static final double threshold = 0.0001;
 
 	private HamerlyClusteringData data;
-	
+
 	/**
 	 * 
 	 * ベクトルのノルム 実装終了
@@ -48,16 +49,18 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 */
 	private double distance(double[] x, double[] y) {
 		double sum = 0;
+		
+//		ユークリッド距離
 		for (int i = 0; i < x.length; i++) {
 			sum += Math.pow((x[i] - y[i]), 2.0);
 		}
 		return Math.sqrt(sum);
 
-		// マンハッタン距離に変えて実験
-		// for(int i = 0; i < x.length; i++){
-		// sum += Math.abs(x[i] - y[i]);
-		// }
-		// return sum;
+//		 マンハッタン距離に変えて実験
+//		 for(int i = 0; i < x.length; i++){
+//		 sum += Math.abs(x[i] - y[i]);
+//		 }
+//		 return sum;
 	}
 
 	/**
@@ -87,8 +90,8 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 	 */
 	private void initializeClusters(double[][] delegation,
 			ArrayList<double[]> dataSpace) {
-//		byte[][] fruit = new byte[data.n][data.k];
-		
+		// byte[][] fruit = new byte[data.n][data.k];
+
 		for (int i = 0; i < data.n; i++) {
 			/* 一番近い代表点を選択する */
 			int r = 0;
@@ -100,23 +103,21 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 				if (dis < minDistance) {
 					minDistance = dis;
 					r = j;
-				}
-				else{
-					if (dis < secondDistance){
+				} else {
+					if (dis < secondDistance) {
 						secondDistance = dis;
 					}
 				}
 			}
 			data.upperBorders[i] = minDistance;
 			data.lowerBorders[i] = secondDistance;
-//			fruit[i][r] = 1;
+			// fruit[i][r] = 1;
 			data.room[i] = r;
 			data.roomsize[r]++;
 			r = 0;
 		}
-		
 
-//		return fruit;
+		// return fruit;
 	}
 
 	/**
@@ -142,50 +143,48 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		// sum[x] += indicator[i][j] * dataSpace.get(i)[x];
 		// }
 		// }
-		
+
 		for (int i = 0; i < data.n; i++) {
 			if (indicator[i][j] == 1) {
 				num++;
 			}
 		}
 		int numn = data.roomsize[j];
-		
+
 		for (int x = 0; x < data.d; x++) {
 			for (int i = 0; i < data.n; i++) {
 				sum[x] += indicator[i][j] * dataSpace.get(i)[x];
 			}
-//			sum[x] = sum[x] / (double) num;
+			// sum[x] = sum[x] / (double) num;
 			sum[x] = sum[x] / (double) numn;
 		}
 
 		return sum;
 	}
-	
-	
-	
+
 	/**
-	 * roomへの完全移行が終了しました。高速で重心の更新を行える関数です。。
-	 * O(nd) + O(nk)
+	 * roomへの完全移行が終了しました。高速で重心の更新を行える関数です。。 O(nd) + O(nk)
+	 * 
 	 * @param dataSpace
 	 * @return
 	 */
 	private double[][] refreshDelegation(ArrayList<double[]> dataSpace) {
 		double[][] sums = new double[data.k][data.d];
 		int[] point = new int[data.k];
-		
-		for(int i = 0; i < data.n; i++){
+
+		for (int i = 0; i < data.n; i++) {
 			int r = data.room[i];
 			point[r]++;
-			for(int x = 0; x < data.d; x++){
+			for (int x = 0; x < data.d; x++) {
 				sums[r][x] += dataSpace.get(i)[x];
 			}
 		}
-		for(int j = 0; j < data.k; j++){
-			for(int x = 0; x < data.d; x++){
+		for (int j = 0; j < data.k; j++) {
+			for (int x = 0; x < data.d; x++) {
 				sums[j][x] = sums[j][x] / (double) point[j];
 			}
 		}
-		
+
 		return sums;
 	}
 
@@ -331,7 +330,6 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		return minnum;
 	}
 
-
 	/*
 	 * (非 Javadoc)
 	 * 
@@ -345,7 +343,7 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		this.data.d = dataSpace.get(0).length;
 		this.data.k = k;
 
-//		indicatorを廃止するべく、下の２つを導入中です。
+		// indicatorを廃止するべく、下の２つを導入中です。
 		this.data.indicator = new byte[data.n][k];
 		this.data.room = new int[data.n];
 		this.data.roomsize = new int[data.k];
@@ -360,17 +358,17 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 		initializeClusters(delegation, dataSpace);
 
 		/*
-		 * この操作は上に統合できる。
-		 * Initialize the upperBorder and lowerBorder of the distance between a
-		 * point and its cluster.
+		 * この操作は上に統合された。
+		 * Initialize the upperBorder and lowerBorder of the
+		 * distance between a point and its cluster.
 		 */
-		System.out.println("上限と下限の初期化中・・・・");
-//		for (int i = 0; i < data.n; i++) {
-//			data.upperBorders[i] = initializeUpperBorder(i, delegation, dataSpace);
-//			data.lowerBorders[i] = initializeLowerBorder(i, delegation, dataSpace);// ここでは
-//		}
-		
-		
+		// for (int i = 0; i < data.n; i++) {
+		// data.upperBorders[i] = initializeUpperBorder(i, delegation,
+		// dataSpace);
+		// data.lowerBorders[i] = initializeLowerBorder(i, delegation,
+		// dataSpace);// ここでは
+		// }
+
 		System.out.println("繰り返しクラスタリングを開始しました・・・・");
 		int count = 0;
 		/*
@@ -380,50 +378,49 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 			count++;
 			double[] minClusterDistance = new double[k];
 			int[] nearestClusterNumber = new int[k];
-//			for (int j = 0; j < k; j++) {
-//				nearestClusterNumber[j] = minDelegate(j, delegation);
-//				minClusterDistance[j] = distance(
-//						delegation[nearestClusterNumber[j]], delegation[j]);
-//			}
-			for(int j = 0; j < data.k; j++){ 
+			// for (int j = 0; j < k; j++) {
+			// nearestClusterNumber[j] = minDelegate(j, delegation);
+			// minClusterDistance[j] = distance(
+			// delegation[nearestClusterNumber[j]], delegation[j]);
+			// }
+			for (int j = 0; j < data.k; j++) {
 				minClusterDistance[j] = minDelegate(j, delegation);
 			}
-			
+
 			System.out.println("Hamerly");
 			/*
 			 * Hamerly Algorithms Hamerlyの命題の条件分岐を行いながら、クラスタを更新します
 			 */
+//			初回がなぜ0回なんだろう
+//			だんだん動かなくなってくるはずなのに、変わらずずっと中に入り続けている。
 			int rc = 0;// 何個中に入ってしまったか数えています。
 			for (int i = 0; i < data.n; i++) {
 				double m = Math.max(minClusterDistance[data.room[i]] / 2.0,
 						data.lowerBorders[i]);
-				if (data.upperBorders[i] <= m){
+				if (data.upperBorders[i] <= m) {
 					continue;
-				}
-				else{
+				} else {
 					data.upperBorders[i] = initializeUpperBorder(i, delegation,
 							dataSpace);
-					if(data.upperBorders[i] <= m){
+					if (data.upperBorders[i] <= m) {
 						continue;
-					}
-					else {/* 依然として条件を満たさない */
+					} else {/* 依然として条件を満たさない */
 						rc++;// どのくらいここに入ってきてしまうのかをカウントしている
-						
+
 						int oldCluster = data.room[i];
 						/*
-						 * 所属クラスタ番号を更新する
-						 * O(nkd)
+						 * 所属クラスタ番号を更新する O(nkd)
 						 */
-//						System.out.print("prenewCenter");
+						// System.out.print("prenewCenter");
 						data.room[i] = nearestCenter(dataSpace.get(i),
 								delegation);
-//						System.out.println("epinewCenter");
+						// System.out.println("epinewCenter");
 						if (oldCluster != data.room[i]) {/* 変化していたら関連値を更新 */
 							// indicatorの更新
-//							data.indicator[i][oldCluster] = 0;
-//							data.indicator[i][data.room[i]] = 1;
-//							data.roomsize[oldCluster]--;
-//							data.roomsize[data.room[i]]++;
+							 data.indicator[i][oldCluster] = 0;
+							 data.indicator[i][data.room[i]] = 1;
+							 data.roomsize[oldCluster]--;
+							 data.roomsize[data.room[i]]++;
 							data.upperBorders[i] = initializeUpperBorder(i,
 									delegation, dataSpace);
 							data.lowerBorders[i] = initializeLowerBorder(i,
@@ -432,10 +429,9 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 
 					}
 				}
-				
+
 			}
 			System.out.println("中に入った回数" + rc + "/" + data.n);
-			
 
 			/* クラスタ番号を主語とする記号の値を更新します(重心の再計算) */
 			System.out.println("重心の計算");
@@ -445,28 +441,30 @@ public class HamerlyClustering implements Clustering, AbstractClustering {
 			delegation = refreshDelegation(dataSpace);
 			for (int j = 0; j < k; j++) {
 				// O(ndk), これが主だった
-//				delegation[j] = refreshDelegation(j, data.indicator, dataSpace);
+				// delegation[j] = refreshDelegation(j, data.indicator,
+				// dataSpace);
 				movingDistance[j] = distance(delegation[j], oldDelegate[j]);
-				
+
 				sumMove += movingDistance[j];
 			}
 
 			/* 各点の上界、下界を更新します */
-			
+
 			System.out.println("上界、下界の更新");
-//			疑わしい
+			// 疑わしい
 			int r = argMax(movingDistance);
 			for (int i = 0; i < data.n; i++) {
-				data.upperBorders[i] = data.upperBorders[i] + movingDistance[data.room[i]];
+				data.upperBorders[i] = data.upperBorders[i]
+						+ movingDistance[data.room[i]];
 				data.lowerBorders[i] = data.lowerBorders[i] - movingDistance[r];
 			}
 
 			/* 終了判定 */
 			// if (judgeDelegation(sumMove, threshold)) {
 			if (sumMove >= threshold) {
-//				if (count % 10 == 0) {
+				// if (count % 10 == 0) {
 				System.err.println(count + "回目のクラスタリングでした・・・・現在のずれ:" + sumMove);
-//				}
+				// }
 				continue;
 			} else {
 				break;

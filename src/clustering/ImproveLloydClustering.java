@@ -30,9 +30,6 @@ public class ImproveLloydClustering {
 	 */
 	private double distance(double[] x, double[] y) {
 		double sum = 0;
-		/*
-		 * イテレータを用いて書いてみたいですね x, yどちらもに必要なパラメータだから使えないのでは？
-		 */
 		for (int i = 0; i < x.length; i++) {
 			sum += Math.pow((x[i] - y[i]), 2.0);
 		}
@@ -61,7 +58,7 @@ public class ImproveLloydClustering {
 			return false;
 	}
 
-	// FIXME 計算量を見積もってHamerlyに長所を移植してください。
+
 	/**
 	 * 計算量を見積もっています・・・・ このrefresh関数、Hamerlyにも使えるんじゃないか
 	 * 
@@ -190,7 +187,7 @@ public class ImproveLloydClustering {
 			/*
 			 * 代表点が変化しているかを確認、更新、変化していなかったら返す
 			 */
-			if (judgeDelegation(delegation, newDelegation, 0.001)) {
+			if (judgeDelegation(delegation, newDelegation, 0.0001)) {
 				delegation = newDelegation.clone();
 				newDelegation = null;
 			} else {

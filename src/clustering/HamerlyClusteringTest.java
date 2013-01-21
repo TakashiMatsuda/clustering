@@ -16,17 +16,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HamerlyClusteringTest {
-	static final int DATASIZE = 10000;
-	static final int JIGEN = 100;
-	static final int CLUSTERNUM = 2;
+	static final int DATASIZE = 100000;
+	static final int JIGEN = 2;
+	static final int CLUSTERNUM = 100;
 
 	// 何かいいクラスタリングサンプルはないかな
 	// Adaboostの実装で用いている特徴ベクトルをクラスタリングするのはどうだろうか
-	// twitter APIで、投稿時刻とツイート数のクラスタリングなどでもいい
-	// 相関を求めるのとどう違うんだろう
-	// 画像解析に使うとか
-	// 書き込みを抜いた純粋テストを制作して、CPU時間を計測して下さい。
-
 	// マンハッタン距離に変えて実験
 
 	HamerlyClustering exa;
