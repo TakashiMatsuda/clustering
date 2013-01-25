@@ -16,17 +16,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ElkanClusteringTest {
-	static final int DATASIZE = 100000;
-	static final int JIGEN = 2;
-	static final int CLUSTERNUM = 100;
-
-	// 何かいいクラスタリングサンプルはないかな
-	// Adaboostの実装で用いている特徴ベクトルをクラスタリングするのはどうだろうか
-	// マンハッタン距離に変えて実験
+	static final int DATASIZE = 10000;
+	static final int JIGEN = 200;
+	static final int CLUSTERNUM = 10;
 
 	ElkanClustering exa;
 	ArrayList<double[]> data;
-	byte[][] fruit;
+	int[] fruit;
 
 	@Before
 	public void beforetestKsplit() {
@@ -45,36 +41,34 @@ public class ElkanClusteringTest {
 
 	@Test
 	public void testKsplit() {
-//		返り値の型を変更しよう。
+		// 返り値の型を変更しよう。
 		this.fruit = exa.Ksplit(CLUSTERNUM, data);
 	}
 
 	@After
 	public void aftertestKsplit() {
 		try {
+			ArrayList<ArrayList<Integer>> mold = new ArrayList<ArrayList<Integer>>(
+					CLUSTERNUM);
+
 			for (int i = 0; i < CLUSTERNUM; i++) {
-				/*
-				 * ファイルの名前を作成
-				 */
+				mold.add(new ArrayList<Integer>(DATASIZE / CLUSTERNUM));
+			}
+			for (int u = 0; u < data.size(); u++) {
+				mold.get(fruit[u]).add(u);
+			}
+			for (int i = 0; i < CLUSTERNUM; i++) {
 				Writer out = null;
 				File output = new File(CLUSTERNUM + "K_" + JIGEN + "D_"
-						+ DATASIZE + "N_Hamerly_result" + i + ".tsv");
+						+ DATASIZE + "N_Elkan_result" + i + ".tsv");
 				out = new BufferedWriter(new FileWriter(output));
-
-				ArrayList<double[]> mold = new ArrayList<double[]>();
-//				上をもう一段階リストで囲んで一回で処理する。
-				for (int u = 0; u < data.size(); u++) {
-					if (fruit[u][i] == 1) {
-						mold.add(data.get(u));
+				for (int j = 0; j < mold.get(i).size(); j++) {
+					for (int d = 0; d < JIGEN; d++) {
+//						書き込みがミスっているのかもしれない。
+						out.write(data.get(mold.get(i).get(j))[d] + "   ");
 					}
 				}
-
-				for (int j = 0; j < mold.size(); j++) {
-					for (int k = 0; k < JIGEN; k++) {
-						out.write(mold.get(j)[k] + "   ");
-					}
-					out.write("\n");
-				}
+				out.write("\n");
 				out.close();
 			}
 		} catch (IOException e) {
