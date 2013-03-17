@@ -16,9 +16,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HamerlyClusteringTest {
-	static final int DATASIZE = 10000;
-	static final int JIGEN = 200;
-	static final int CLUSTERNUM = 10;
+	static final int DATASIZE = 100000;
+	static final int JIGEN = 2;
+	static final int CLUSTERNUM = 1000;
 
 	// 何かいいクラスタリングサンプルはないかな
 	// Adaboostの実装で用いている特徴ベクトルをクラスタリングするのはどうだろうか

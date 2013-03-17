@@ -14,19 +14,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ClusteringTest {
-	static final int DATASIZE = 10000;
-	static final int JIGEN = 100;
-	static final int CLUSTERNUM = 10;
-	static final boolean TWOTRUE = false;// ここを変化させてテスト;
+	static final int DATASIZE = 100000;
+	static final int JIGEN = 2;
+	static final int CLUSTERNUM = 1000;
+	static final boolean TWOTRUE = false;
+	
+//	TODO このテストケースを拡張すれば、一回で全てのものについてデータが取得できる。
+//	家のパソコンでは終わらないので、学科のワークステーションを利用しよう。
 
-	// 何かいいクラスタリングサンプルはないかな
-	// Adaboostの実装で用いている特徴ベクトルをクラスタリングするのはどうだろうか
-	// twitter APIで、投稿時刻とツイート数のクラスタリングなどでもいい
-	// 相関を求めるのとどう違うんだろう
-	// 画像解析に使うとか
+
 	// 書き込みを抜いた純粋テストを制作して、CPU時間を計測して下さい。
 
-	// マンハッタン距離に変えて実験
+	// マンハッタン距離に変えて実験もした
 
 	ImproveLloydClustering exa;
 	ArrayList<double[]> data;
