@@ -136,7 +136,7 @@ public class ImproveLloydClustering {
 			 * 進捗状況を表示
 			 */
 			// if ((c % 10) == 0) {
-			System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
+//			System.out.println("クラスタリング実行中・・・・" + c + "回目のクラスタリング");
 			// }
 
 			/*

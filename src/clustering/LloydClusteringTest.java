@@ -19,7 +19,7 @@ import org.junit.Test;
  *
  */
 public class LloydClusteringTest {
-// クラスタリング結果が全部同じ
+	
 	static final int DATASIZE =3000;
 	static final int JIGEN = 10;
 	static final int CLUSTERNUM = 10;
@@ -39,7 +39,7 @@ public class LloydClusteringTest {
 		}
 		
 		LloydClustering exa = new LloydClustering();
-		List<ArrayList<double[]>> fruit = exa.Ksplit(CLUSTERNUM, data);// 
+		List<ArrayList<double[]>> fruit = exa.Ksplit(CLUSTERNUM, data);
 		// tsvファイルに出力します。
 		// rjavaの存在
 		try{
